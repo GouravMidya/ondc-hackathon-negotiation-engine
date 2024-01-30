@@ -6,6 +6,7 @@ const router = express.Router()
 //create negotiation
 router.post('/', () =>{
     console.log("create a negotiation")
+
 })
 //fetch negotiation
 
