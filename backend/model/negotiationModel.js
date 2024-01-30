@@ -6,11 +6,13 @@ const buyerSchema = require('./buyerSchema.js');
 
 const numberSchema = new Schema({
     value: Number,
+    who: { type: String, enum: ['seller', 'buyer'] },
     timestamp: { type: Date, default: Date.now }
   }, { _id: false });
   
 const stringSchema = new Schema({
     value: String,
+    who: { type: String, enum: ['seller', 'buyer'] },
     timestamp: { type: Date, default: Date.now }
   }, { _id: false });
 
@@ -79,6 +81,10 @@ const negotiationSchema = new Schema({
             type: String,
             enum: ['OPEN', 'CLOSED'],
             default: 'OPEN'
+        },
+        turn: {
+            type: String,
+            enum: ['seller', 'buyer']
         }
     }
     
