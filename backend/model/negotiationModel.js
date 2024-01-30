@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
-const sellerSchema = require('./sellerSchema.js');
-const buyerSchema = require('./buyerSchema.js');
+const {Seller,sellerSchema} = require('./sellerSchema.js');
+const {Buyer,buyerSchema} = require('./buyerSchema.js');
 
 const numberSchema = new Schema({
     value: Number,

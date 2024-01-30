@@ -30,5 +30,5 @@ const sellerSchema = new Schema({
 sellerSchema.virtual('sellerId').get(function() {
     return this._id;
 });
-
-module.exports = sellerSchema;
+const Seller = mongoose.model('Seller',sellerSchema)
+module.exports = {Seller,sellerSchema};

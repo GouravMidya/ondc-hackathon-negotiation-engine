@@ -27,4 +27,6 @@ buyerSchema.virtual('buyerId').get(function() {
     return this._id;
 });
 
-module.exports = buyerSchema;
+const Buyer = mongoose.model('Buyer',buyerSchema)
+
+module.exports = {Buyer,buyerSchema};
