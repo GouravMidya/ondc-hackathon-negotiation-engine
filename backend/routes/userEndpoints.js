@@ -1,6 +1,8 @@
 const express = require('express');
 const { createBuyer,
-    getBuyer
+    getBuyer,
+    updateBuyer,
+    deleteBuyer
 } = require('../controllers/userController');
 
 
@@ -14,13 +16,11 @@ router.post('/buyer', createBuyer);
 // Get a buyer by id
 router.get('/buyer/:id', getBuyer);
 
-router.put('/buyer/:id', async (req, res) => {
-    // Update a buyer by id
-});
+// Update a buyer by id
+router.put('/buyer/:id', updateBuyer);
 
-router.delete('/buyer/:id', async (req, res) => {
-    // Delete a buyer by id
-});
+//Delete a buyer by id
+router.delete('/buyer/:id', deleteBuyer);
 
 // Seller Endpoints
 router.post('/seller', async (req, res) => {

@@ -34,8 +34,49 @@ const getBuyer = async (req,res) =>{
 }
 
 
+//Update a buyer by id
+const updateBuyer = async (req,res) =>{
+    const { id } = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error:"Invalid ID"})
+    }
+
+    const buyer = await Buyer.findOneAndUpdate({_id: id},{
+        ...req.body
+    })
+
+    if(!buyer){
+        return res.status(404).json({error:"No such buyer"})
+    }
+
+    res.status(200).json(buyer)
+
+}
+
+// Delete a buyer by id
+const deleteBuyer = async (req,res) =>{
+    const { id } = req.params
+    
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error:"Invalid ID"})
+    }
+
+    const buyer = await Buyer.findOneAndDelete({_id: id})
+
+    if(!buyer){
+        return res.status(404).json({error:"No such buyer"})
+    }
+
+    res.status(200).json(buyer)
+}
+
+
+//Seller Methods
+
 
 module.exports = {
     createBuyer,
-    getBuyer
+    getBuyer,
+    updateBuyer,
+    deleteBuyer
 }
