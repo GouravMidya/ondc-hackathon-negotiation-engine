@@ -2,7 +2,11 @@ const express = require('express');
 const { createBuyer,
     getBuyer,
     updateBuyer,
-    deleteBuyer
+    deleteBuyer,
+    createSeller,
+    getSeller,
+    updateSeller,
+    deleteSeller
 } = require('../controllers/userController');
 
 
@@ -17,27 +21,23 @@ router.post('/buyer', createBuyer);
 router.get('/buyer/:id', getBuyer);
 
 // Update a buyer by id
-router.put('/buyer/:id', updateBuyer);
+router.patch('/buyer/:id', updateBuyer);
 
 //Delete a buyer by id
 router.delete('/buyer/:id', deleteBuyer);
 
 // Seller Endpoints
-router.post('/seller', async (req, res) => {
-    // Create a new seller
-});
+// Create a new seller
+router.post('/seller', createSeller);
 
-router.get('/seller/:id', async (req, res) => {
-    // Get a seller by id
-});
+// Get a seller by id
+router.get('/seller/:id', getSeller);
 
-router.put('/seller/:id', async (req, res) => {
-    // Update a seller by id
-});
+// Update a seller by id
+router.patch('/seller/:id', updateSeller);
 
-router.delete('/seller/:id', async (req, res) => {
-    // Delete a seller by id
-});
+// Delete a seller by id
+router.delete('/seller/:id', deleteSeller);
 
 module.exports = router;
 

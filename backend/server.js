@@ -25,6 +25,6 @@ mongoose.connect(process.env.MONG_URI)
         })
     })
     .catch((error) =>{
-        console.log(error)
+        console.log(error.message)
     })
 
