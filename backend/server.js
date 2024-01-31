@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const negotiationRoutes = require('./routes/negotiationEndpoints')
-
+const userRoutes = require('./routes/userEndpoints')
 const app = express()
 
 //middleware
@@ -15,7 +15,7 @@ app.use((req,res,next) =>{
 
 //routes
 app.use('/api/negotiation',negotiationRoutes)
-
+app.use('/api/users',userRoutes)
 
 //mongodb
 mongoose.connect(process.env.MONG_URI)

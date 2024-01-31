@@ -1,5 +1,4 @@
 const express = require('express')
-const Negotiation = require('../model/negotiationModel')
 const {createNegotiation} = require('../controllers/negotiationController')
 const router = express.Router()
 
