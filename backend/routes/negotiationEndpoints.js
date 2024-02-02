@@ -12,7 +12,10 @@ router.post('/',createNegotiation);
 router.get('/:id', getNegotiation);
 
 //update negotiation
+router.patch('/:id', getNegotiation);
 
 //delete negotiation
+router.delete('/:id', getNegotiation);
+
 
 module.exports = router

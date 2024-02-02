@@ -1,8 +1,15 @@
+//sensitive info hiding
 require('dotenv').config()
+
+//framework and database operations
 const express = require('express')
 const mongoose = require('mongoose')
+
+//to handle requests to server
 const negotiationRoutes = require('./routes/negotiationEndpoints')
 const userRoutes = require('./routes/userEndpoints')
+
+//express app
 const app = express()
 
 //middleware
