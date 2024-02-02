@@ -37,8 +37,24 @@ const getNegotiation = async (req, res) => {
 //update negotiation
 
 //delete negotiation
+const deleteNegotiation = async (req,res) =>{
+    const { id } = req.params
+    
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error:"Invalid ID"})
+    }
+
+    const negotiation = await Negotiation.findOneAndDelete({_id: id})
+
+    if(!negotiation){
+        return res.status(404).json({error:"No such Negotiation"})
+    }
+
+    res.status(200).json(negotiation)
+}
 
 
 module.exports = {createNegotiation,
-    getNegotiation
+    getNegotiation,
+    deleteNegotiation
 }
