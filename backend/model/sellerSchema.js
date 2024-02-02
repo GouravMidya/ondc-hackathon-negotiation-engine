@@ -32,3 +32,17 @@ sellerSchema.virtual('sellerId').get(function() {
 });
 const Seller = mongoose.model('Seller',sellerSchema)
 module.exports = {Seller,sellerSchema};
+/* Seller Package should look like:
+{
+    "name": "ABC",
+    "location" : {
+        "city":"Mumbai",
+        "country":"India"
+    },
+    "rating":5,
+    "productsSold" : 5,
+    activeSince: "2024-01-31",
+    email: "abc@gmail.com",
+    contactNumber: "9342112345",
+}
+*/

@@ -13,11 +13,32 @@ const createNegotiation = async (req,res) =>{
 }
 
 //fetch negotiation
+const getNegotiation = async (req, res) => {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID" });
+    }
+
+    try {
+        const negotiation = await Negotiation.findById(id);
+
+        if (!negotiation) {
+            return res.status(404).json({ error: "No such negotiation" });
+        }
+
+        res.status(200).json(negotiation);
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 
 //update negotiation
 
 //delete negotiation
 
 
-module.exports = {createNegotiation
+module.exports = {createNegotiation,
+    getNegotiation
 }

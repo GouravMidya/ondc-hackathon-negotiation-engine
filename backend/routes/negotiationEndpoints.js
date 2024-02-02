@@ -1,10 +1,15 @@
 const express = require('express')
-const {createNegotiation} = require('../controllers/negotiationController')
+const {createNegotiation, 
+getNegotiation} = require('../controllers/negotiationController')
+
+
 const router = express.Router()
 
 //create negotiation
-router.post('/',createNegotiation)
+router.post('/',createNegotiation);
+
 //fetch negotiation
+router.get('/:id', getNegotiation);
 
 //update negotiation
 
