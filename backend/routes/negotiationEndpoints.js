@@ -1,6 +1,7 @@
 const express = require('express')
 const {createNegotiation, 
 getNegotiation,
+updateNegotiation,
 deleteNegotiation} = require('../controllers/negotiationController')
 
 
@@ -13,6 +14,7 @@ router.post('/',createNegotiation);
 router.get('/:id', getNegotiation);
 
 //update negotiation
+router.patch('/:id', updateNegotiation);
 
 //delete negotiation
 router.delete('/:id', deleteNegotiation);
