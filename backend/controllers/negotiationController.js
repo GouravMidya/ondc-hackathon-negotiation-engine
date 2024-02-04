@@ -123,7 +123,7 @@ const updateNegotiation = async (req, res) => {
         }
 
         // Extract the user from the 'who' field of the negotiation parameters
-        const currentUser = req.body.negotiationDetails.turn;
+        const currentUser = req.body.negotiationDetails.turn; 
         // Check if the user making the request is allowed to update negotiations based on the turn
         if (currentUser && currentUser !== negotiation.negotiationDetails.turn) {
             // Update negotiation parameters
