@@ -206,20 +206,22 @@ const checkNegotiationStatus = async (negotiation) => {
     const buyerScore = negotiation.negotiationDetails.buyerScore;
     const sellerScore = negotiation.negotiationDetails.sellerScore;
 
-    // Ensure that there are at least 11 updates
-    if (buyerScore.length < 11 || sellerScore.length < 11) {
+    // Ensure that there are at least 5 updates
+    if (buyerScore.length < 5 || sellerScore.length < 5) {
         return;
     }
 
     // Calculate the percent change over the last 10 updates
-    const buyerPercentChange = (buyerScore[buyerScore.length - 1] - buyerScore[buyerScore.length - 11]) / buyerScore[buyerScore.length - 11] * 100;
-    const sellerPercentChange = (sellerScore[sellerScore.length - 1] - sellerScore[sellerScore.length - 11]) / sellerScore[sellerScore.length - 11] * 100;
-
+    const buyerPercentChange = (buyerScore[buyerScore.length - 1] - buyerScore[buyerScore.length - 5]) / buyerScore[buyerScore.length - 5] * 100;
+    console.log(buyerPercentChange)
+    const sellerPercentChange = (sellerScore[sellerScore.length - 1] - sellerScore[sellerScore.length - 5]) / sellerScore[sellerScore.length - 5] * 100;
+    console.log(sellerPercentChange)
     // Check if scores are above 75 and percent change is close to 0
     if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 1 && Math.abs(sellerPercentChange) < 1) {
         // If the alert has not been sent yet, send it
         if (!negotiation.negotiationDetails.alertSent) {
             // Send an alert to both buyer and seller to conclude negotiation soon
+            console.log("in reeq loop")
             let mailOptions = {
                 from: process.env.mail,
                 to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
@@ -237,10 +239,24 @@ const checkNegotiationStatus = async (negotiation) => {
             // Mark the alert as sent
             negotiation.negotiationDetails.alertSent = true;
             await negotiation.save();
-        } else {
+        } 
+        else {
             // If the alert has been sent and there is still no change in score percentage, close the negotiation
             negotiation.negotiationDetails.state = "CLOSED";
             await negotiation.save();
+            let mailOptions = {
+                from: process.env.mail,
+                to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
+                subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
+                text: 'Negotiation has been closed due to no change in score percentage.'
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
             console.log("Negotiation has been closed due to no change in score percentage.");
         }
 
