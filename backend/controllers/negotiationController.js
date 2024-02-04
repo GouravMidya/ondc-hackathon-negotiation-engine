@@ -114,26 +114,24 @@ const updateNegotiation = async (req, res) => {
         }
 
         // Extract the allowed parameters from the request body
-        const allowedUpdates = ['priceHistory', 'warranty', 'discount', 'financing', 'buyerFinderFee', 'commission'];
-        const updates = Object.keys(req.body);
+        const allowedUpdates = Object.keys(req.body.productDetails);
 
         // Check if all update parameters are allowed
-        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+        const isValidOperation = allowedUpdates.every((update) => Object.keys(negotiation.productDetails).includes(update));
         if (!isValidOperation) {
             return res.status(400).json({ error: "Invalid updates!" });
         }
 
         // Extract the user from the 'who' field of the negotiation parameters
-        const currentUser = req.body[allowedUpdates[0]] ? req.body[allowedUpdates[0]][0].who : null;
-
+        const currentUser = req.body.negotiationDetails.turn;
         // Check if the user making the request is allowed to update negotiations based on the turn
         if (currentUser && currentUser !== negotiation.negotiationDetails.turn) {
             // Update negotiation parameters
             allowedUpdates.forEach((update) => {
-                if (Array.isArray(req.body[update])) {
-                    negotiation.productDetails[update] = negotiation.productDetails[update].concat(req.body[update]);
+                if (Array.isArray(req.body.productDetails[update])) {
+                    negotiation.productDetails[update].push(...req.body.productDetails[update]);
                 }
-            });
+            });                     
 
             // Switch turn between seller and buyer
             negotiation.negotiationDetails.turn = currentUser;

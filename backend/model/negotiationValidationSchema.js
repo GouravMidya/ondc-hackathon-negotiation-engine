@@ -41,8 +41,8 @@ const negotiationValidationSchema = Joi.object({
     }),
     productDetails: Joi.object({
         productName: Joi.string().required(),
-        productDescription: Joi.string().required(),
-        productCategory: Joi.string().required(),
+        productDescription: Joi.string(),
+        productCategory: Joi.string(),
         priceHistory: Joi.array().items(Joi.object({
             value: Joi.number().required(),
             who: Joi.string().valid('seller', 'buyer').required(),
@@ -105,11 +105,11 @@ const negotiationValidationSchema = Joi.object({
         }))
     }).required(),
     negotiationDetails: Joi.object({
-        sellerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied').required(),
-        buyerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied').required(),
-        sellerScore: Joi.array().items(Joi.number().min(0).max(100)).required(),
-        buyerScore: Joi.array().items(Joi.number().min(0).max(100)).required(),
-        state: Joi.string().valid('OPEN', 'CLOSED').required(),
+        sellerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied'),
+        buyerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied'),
+        sellerScore: Joi.array().items(Joi.number().min(0).max(100)),
+        buyerScore: Joi.array().items(Joi.number().min(0).max(100)),
+        state: Joi.string().valid('OPEN', 'CLOSED'),
         turn: Joi.string().valid('seller', 'buyer').required()
     }).required()
 });
