@@ -85,6 +85,9 @@ const negotiationSchema = new Schema({
         turn: {
             type: String,
             enum: ['seller', 'buyer']
+        },
+        alertSent: { 
+            type: Boolean, default: false 
         }
     }
     

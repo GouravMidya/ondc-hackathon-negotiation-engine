@@ -213,21 +213,32 @@ const checkNegotiationStatus = async (negotiation) => {
 
     // Check if scores are above 75 and percent change is close to 0
     if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 1 && Math.abs(sellerPercentChange) < 1) {
-        // Send an alert to both buyer and seller to conclude negotiation soon
-        let mailOptions = {
-            from: process.env.mail,
-            to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
-            subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
-            text: 'Please conclude the negotiation soon, else it will be terminated.'
-        };
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+        // If the alert has not been sent yet, send it
+        if (!negotiation.negotiationDetails.alertSent) {
+            // Send an alert to both buyer and seller to conclude negotiation soon
+            let mailOptions = {
+                from: process.env.mail,
+                to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
+                subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
+                text: 'Please conclude the negotiation soon, else it will be terminated.'
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
 
+            // Mark the alert as sent
+            negotiation.negotiationDetails.alertSent = true;
+            await negotiation.save();
+        } else {
+            // If the alert has been sent and there is still no change in score percentage, close the negotiation
+            negotiation.negotiationDetails.state = "CLOSED";
+            await negotiation.save();
+            console.log("Negotiation has been closed due to no change in score percentage.");
+        }
 
     } else if (buyerScore[buyerScore.length - 1] < 75 && sellerScore[sellerScore.length - 1] < 75) {
         // Check if scores have improved by 25% over the last 10 updates
