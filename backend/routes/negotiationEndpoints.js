@@ -1,4 +1,13 @@
 const express = require('express')
+
+const rateLimit = require("express-rate-limit");
+
+// Create a rate limiter
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+
 const {createNegotiation, 
 getNegotiation,
 updateNegotiation,
@@ -10,19 +19,19 @@ getAllNegotiations
 const router = express.Router()
 
 //create negotiation
-router.post('/',createNegotiation);
+router.post('/', limiter, createNegotiation);
 
 //fetch negotiation
-router.get('/:id', getNegotiation);
+router.get('/:id', limiter , getNegotiation);
 
 //fetch all negotiations
-router.get('/', getAllNegotiations);
+router.get('/', limiter , getAllNegotiations);
 
 //update negotiation
-router.patch('/:id', updateNegotiation);
+router.patch('/:id', limiter , updateNegotiation);
 
 //delete negotiation
-router.delete('/:id', deleteNegotiation);
+router.delete('/:id', limiter , deleteNegotiation);
 
 
 module.exports = router

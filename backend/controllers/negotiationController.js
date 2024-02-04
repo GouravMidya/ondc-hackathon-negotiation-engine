@@ -1,11 +1,43 @@
+//sensitive info hiding
+require('dotenv').config()
+
 const Negotiation = require('../model/negotiationModel')
+
+//mail service for sending mails after negotiation termination , success and failure
+const nodemailer = require('nodemailer');
+
+// Create a transporter
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.mail,
+        pass: process.env.pass
+    }
+});
+
+
+//import mongoose for id type validation purpose
 const mongoose = require('mongoose')
+
+// Import winston a logging library for error logging purposes
+const winston = require('winston');
 
 const {Buyer,buyerSchema} = require('../model/buyerSchema');
 const {Seller,sellerSchema} = require('../model/sellerSchema');
 
+//to validate incoming data and ensure no nosql injections are there
+const negotiationValidationSchema = require('../model/negotiationValidationSchema');
+
 //create negotiation
 const createNegotiation = async (req,res) =>{
+    
+    //validate using joi that all data is correct
+    const { error } = negotiationValidationSchema.validate(req.body);
+    if (error) {
+        winston.error(error); // Log the error details
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
     try{
         const { buyerId, sellerId } = req.body;
 
@@ -27,7 +59,9 @@ const createNegotiation = async (req,res) =>{
         await negotiation.save();
         res.status(201).json(negotiation)
     }catch(error){
-        res.status(400).json(error)
+        winston.error(error); // Log the error details
+        // Send a generic error message
+        res.status(400).json({ error: "An error occurred while creating the negotiation." }) 
     }
 }
 
@@ -49,13 +83,23 @@ const getNegotiation = async (req, res) => {
 
         res.status(200).json(negotiation);
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        winston.error(error); // Log the error details
+        // Send a generic error message
+        res.status(500).json({ error: "An error occurred while fetching the negotiation." }) 
     }
 };
 
 
 //update negotiation
 const updateNegotiation = async (req, res) => {
+
+    //validate using joi that all data is correct
+    const { error } = negotiationValidationSchema.validate(req.body);
+    if (error) {
+        winston.error(error); // Log the error details
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
     try {
         const { id } = req.params;
 
@@ -106,30 +150,38 @@ const updateNegotiation = async (req, res) => {
             return res.status(403).json({ error: "User is not allowed to update negotiations at this turn." });
         }
     } catch (error) {
-        res.status(400).json(error);
+        winston.error(error); // Log the error details
+        // Send a generic error message
+        res.status(400).json({ error: "An error occurred while updating the negotiation." }) 
     }
 };
 
 
-
 //delete negotiation
 const deleteNegotiation = async (req,res) =>{
-    const { id } = req.params
+    try{
+        const { id } = req.params
     
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({error:"Invalid ID"})
+        if(!mongoose.Types.ObjectId.isValid(id)){
+            return res.status(404).json({error:"Invalid ID"})
+        }
+
+        const negotiation = await Negotiation.findOneAndDelete({_id: id})
+
+        if(!negotiation){
+            return res.status(404).json({error:"No such Negotiation"})
+        }
+
+        res.status(200).json(negotiation)
+    }catch (error) {
+        winston.error(error); // Log the error details
+        // Send a generic error message
+        res.status(400).json({ error: "An error occurred while deleting the negotiation." }) 
     }
-
-    const negotiation = await Negotiation.findOneAndDelete({_id: id})
-
-    if(!negotiation){
-        return res.status(404).json({error:"No such Negotiation"})
-    }
-
-    res.status(200).json(negotiation)
 }
 
 //fetch all negotiations
+//ONLY FOR DEV PURPOSE , TO BE REMOVED AFTER PRODUCTION
 const getAllNegotiations = async (req, res) => {
     try {
         const negotiations = await Negotiation.find({});
@@ -140,13 +192,20 @@ const getAllNegotiations = async (req, res) => {
 
         res.status(200).json(negotiations);
     } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        winston.error(error); // Log the error details
+        // Send a generic error message
+        res.status(500).json({ error: "An error occurred while fetching the negotiations." }) 
     }
 };
 
 const checkNegotiationStatus = async (negotiation) => {
     const buyerScore = negotiation.negotiationDetails.buyerScore;
     const sellerScore = negotiation.negotiationDetails.sellerScore;
+
+    // Ensure that there are at least 11 updates
+    if (buyerScore.length < 11 || sellerScore.length < 11) {
+        return;
+    }
 
     // Calculate the percent change over the last 10 updates
     const buyerPercentChange = (buyerScore[buyerScore.length - 1] - buyerScore[buyerScore.length - 11]) / buyerScore[buyerScore.length - 11] * 100;
@@ -155,7 +214,21 @@ const checkNegotiationStatus = async (negotiation) => {
     // Check if scores are above 75 and percent change is close to 0
     if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 1 && Math.abs(sellerPercentChange) < 1) {
         // Send an alert to both buyer and seller to conclude negotiation soon
-        console.log("Alert: Please conclude the negotiation soon, else it will be terminated.");
+        let mailOptions = {
+            from: process.env.mail,
+            to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
+            subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
+            text: 'Please conclude the negotiation soon, else it will be terminated.'
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+
     } else if (buyerScore[buyerScore.length - 1] < 75 && sellerScore[sellerScore.length - 1] < 75) {
         // Check if scores have improved by 25% over the last 10 updates
         if (buyerPercentChange > 25 && sellerPercentChange > 25) {
