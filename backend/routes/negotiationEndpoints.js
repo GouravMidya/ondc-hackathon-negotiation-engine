@@ -2,7 +2,9 @@ const express = require('express')
 const {createNegotiation, 
 getNegotiation,
 updateNegotiation,
-deleteNegotiation} = require('../controllers/negotiationController')
+deleteNegotiation,
+getAllNegotiations
+} = require('../controllers/negotiationController')
 
 
 const router = express.Router()
@@ -12,6 +14,9 @@ router.post('/',createNegotiation);
 
 //fetch negotiation
 router.get('/:id', getNegotiation);
+
+//fetch all negotiations
+router.get('/', getAllNegotiations);
 
 //update negotiation
 router.patch('/:id', updateNegotiation);
