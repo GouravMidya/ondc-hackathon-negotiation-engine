@@ -79,7 +79,7 @@ const negotiationSchema = new Schema({
         }],
         state: {
             type: String,
-            enum: ['OPEN', 'CLOSED'],
+            enum: ['OPEN', 'CLOSED','SUCCESSFUL'],
             default: 'OPEN'
         },
         turn: {
