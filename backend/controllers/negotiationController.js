@@ -38,30 +38,30 @@ const createNegotiation = async (req,res) =>{
         return res.status(400).json({ error: error.details[0].message });
     }
 
-    try{
-        const { buyerId, sellerId } = req.body;
-
+    try {
+        const { buyer, seller, ...negotiationData } = req.body;
+    
         // Fetch buyer and seller details
-        const buyer = await Buyer.findById(buyerId);
-        const seller = await Seller.findById(sellerId);
-
-        if (!buyer || !seller) {
+        const buyerDetails = await Buyer.findById(buyer._id);
+        const sellerDetails = await Seller.findById(seller._id);
+    
+        if (!buyerDetails || !sellerDetails) {
             return res.status(404).json({ error: "Buyer or Seller not found" });
         }
-
+    
         // Create negotiation with fetched details
         const negotiation = new Negotiation({
-            ...req.body,
-            buyer: buyer,
-            seller: seller
+            ...negotiationData,  // Spread the rest of the negotiation data
+            buyer: buyerDetails,
+            seller: sellerDetails,
         });
-
+    
         await negotiation.save();
-        res.status(201).json(negotiation)
-    }catch(error){
+        res.status(201).json(negotiation);
+    } catch (error) {
         winston.error(error); // Log the error details
         // Send a generic error message
-        res.status(400).json({ error: "An error occurred while creating the negotiation." }) 
+        res.status(400).json({ error: "An error occurred while creating the negotiation." });
     }
 }
 
