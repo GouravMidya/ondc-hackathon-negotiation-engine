@@ -92,7 +92,6 @@ const getNegotiation = async (req, res) => {
 
 //update negotiation
 const updateNegotiation = async (req, res) => {
-
     //validate using joi that all data is correct
     const { error } = negotiationValidationSchema.validate(req.body);
     if (error) {
@@ -123,7 +122,8 @@ const updateNegotiation = async (req, res) => {
         }
 
         // Extract the user from the 'who' field of the negotiation parameters
-        const currentUser = req.body.negotiationDetails.turn; 
+        const currentUser = req.body.negotiationDetails.turn;
+
         // Check if the user making the request is allowed to update negotiations based on the turn
         if (currentUser && currentUser !== negotiation.negotiationDetails.turn) {
             // Update negotiation parameters
@@ -131,12 +131,18 @@ const updateNegotiation = async (req, res) => {
                 if (Array.isArray(req.body.productDetails[update])) {
                     negotiation.productDetails[update].push(...req.body.productDetails[update]);
                 }
-            });                     
+            });
+
+            // Update buyer and seller scores
+            if(req.body.negotiationDetails.buyerScore)
+                negotiation.negotiationDetails.buyerScore.push(...req.body.negotiationDetails.buyerScore);
+            if(req.body.negotiationDetails.sellerScore)
+                negotiation.negotiationDetails.sellerScore.push(...req.body.negotiationDetails.sellerScore);
 
             // Switch turn between seller and buyer
             negotiation.negotiationDetails.turn = currentUser;
 
-            //check if the negotiation is going in stale condition or not
+            // Check if the negotiation is going in a stale condition or not
             if (negotiation.negotiationDetails.buyerScore.length % 10 === 0 && negotiation.negotiationDetails.sellerScore.length % 10 === 0) {
                 await checkNegotiationStatus(negotiation);
             }
@@ -150,7 +156,7 @@ const updateNegotiation = async (req, res) => {
     } catch (error) {
         winston.error(error); // Log the error details
         // Send a generic error message
-        res.status(400).json({ error: "An error occurred while updating the negotiation." }) 
+        res.status(400).json({ error: "An error occurred while updating the negotiation." });
     }
 };
 
