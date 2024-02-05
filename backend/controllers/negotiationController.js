@@ -142,6 +142,9 @@ const updateNegotiation = async (req, res) => {
             // Switch turn between seller and buyer
             negotiation.negotiationDetails.turn = currentUser;
 
+            //if both satisfied , change the state to closed and send all negotiation details to both the parties
+            //add mail here
+
             // Check if the negotiation is going in a stale condition or not
             if (negotiation.negotiationDetails.buyerScore.length % 5 === 0 && negotiation.negotiationDetails.sellerScore.length % 5 === 0) {
                 await checkNegotiationStatus(negotiation);
@@ -217,7 +220,7 @@ const checkNegotiationStatus = async (negotiation) => {
     const sellerPercentChange = (sellerScore[sellerScore.length - 1] - sellerScore[sellerScore.length - 5]) / sellerScore[sellerScore.length - 5] * 100;
     console.log(sellerPercentChange)
     // Check if scores are above 75 and percent change is close to 0
-    if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 1 && Math.abs(sellerPercentChange) < 1) {
+    if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 10 && Math.abs(sellerPercentChange) < 10) {
         // If the alert has not been sent yet, send it
         if (!negotiation.negotiationDetails.alertSent) {
             // Send an alert to both buyer and seller to conclude negotiation soon
@@ -227,6 +230,7 @@ const checkNegotiationStatus = async (negotiation) => {
                 to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
                 subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
                 text: 'Please conclude the negotiation soon, else it will be terminated.'
+                // Quantity : ${negotiation.quantity}
             };
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -257,7 +261,7 @@ const checkNegotiationStatus = async (negotiation) => {
                     console.log('Email sent: ' + info.response);
                 }
             });
-            console.log("Negotiation has been closed due to no change in score percentage.");
+            //mail
         }
 
     } else if (buyerScore[buyerScore.length - 1] < 75 && sellerScore[sellerScore.length - 1] < 75) {
@@ -269,6 +273,20 @@ const checkNegotiationStatus = async (negotiation) => {
             // Change the state of negotiation to CLOSED
             negotiation.negotiationDetails.state = "CLOSED";
             await negotiation.save();
+            //mail
+            let mailOptions = {
+                from: process.env.mail,
+                to: `${negotiation.buyer.email}, ${negotiation.seller.email}`,
+                subject: `Negotiation Alert for Negotiation ID: ${negotiation._id}`,
+                text: 'Negotiation has been closed due to no change in score percentage.'
+            };
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
             console.log("Negotiation has been closed due to insufficient improvement in scores.");
         }
     }
