@@ -45,6 +45,10 @@ const negotiationSchema = new Schema({
             type: [numberSchema],
             required : true
         },
+        quantity:{
+            type:[numberSchema],
+            required:true
+        },
         warranty: [stringSchema],
         discount: [numberSchema],
         financing: [stringSchema],

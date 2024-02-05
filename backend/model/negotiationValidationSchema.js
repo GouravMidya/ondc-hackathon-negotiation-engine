@@ -48,6 +48,11 @@ const negotiationValidationSchema = Joi.object({
             who: Joi.string().valid('seller', 'buyer').required(),
             timestamp: Joi.date().required()
         })).required(),
+        quantity: Joi.array().items(Joi.object({
+            value: Joi.number().required(),
+            who: Joi.string().valid('seller', 'buyer').required(),
+            timestamp: Joi.date().required()
+        })).required(),
         warranty: Joi.array().items(Joi.object({
             value: Joi.string().required(),
             who: Joi.string().valid('seller', 'buyer').required(),
