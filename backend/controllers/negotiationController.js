@@ -6,7 +6,7 @@ const Negotiation = require('../model/negotiationModel')
 //mail service for sending mails after negotiation termination , success and failure
 const nodemailer = require('nodemailer');
 
-// Create a transporter
+// Create a mail transporter
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -143,7 +143,7 @@ const updateNegotiation = async (req, res) => {
             negotiation.negotiationDetails.turn = currentUser;
 
             // Check if the negotiation is going in a stale condition or not
-            if (negotiation.negotiationDetails.buyerScore.length % 10 === 0 && negotiation.negotiationDetails.sellerScore.length % 10 === 0) {
+            if (negotiation.negotiationDetails.buyerScore.length % 5 === 0 && negotiation.negotiationDetails.sellerScore.length % 5 === 0) {
                 await checkNegotiationStatus(negotiation);
             }
 
@@ -211,7 +211,7 @@ const checkNegotiationStatus = async (negotiation) => {
         return;
     }
 
-    // Calculate the percent change over the last 10 updates
+    // Calculate the percent change over the last 5 updates
     const buyerPercentChange = (buyerScore[buyerScore.length - 1] - buyerScore[buyerScore.length - 5]) / buyerScore[buyerScore.length - 5] * 100;
     console.log(buyerPercentChange)
     const sellerPercentChange = (sellerScore[sellerScore.length - 1] - sellerScore[sellerScore.length - 5]) / sellerScore[sellerScore.length - 5] * 100;
