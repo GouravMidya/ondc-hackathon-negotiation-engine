@@ -112,6 +112,10 @@ const updateNegotiation = async (req, res) => {
             return res.status(404).json({ error: "No such negotiation" });
         }
 
+        if (negotiation.negotiationDetails.state === "CLOSED" || negotiation.negotiationDetails.state === "SUCCESSFUL" ) {
+            return res.status(400).json({ error: "Negotiation is already closed and cannot be updated." });
+        }
+
         // Extract the allowed parameters from the request body
         const allowedUpdates = Object.keys(req.body.productDetails);
 
