@@ -138,11 +138,11 @@ const updateNegotiation = async (req, res) => {
                 negotiation.negotiationDetails.buyerScore.push(...req.body.negotiationDetails.buyerScore);
             if(req.body.negotiationDetails.sellerScore)
                 negotiation.negotiationDetails.sellerScore.push(...req.body.negotiationDetails.sellerScore);
-            if(req.body.negotiationDetails.sellerSatisfaction){
+            if(req.body.negotiationDetails.sellerSatisfaction=="Satisfied"){
                 negotiation.negotiationDetails.sellerSatisfaction = "Satisfied";
                 await negotiation.save();
             }
-            if(req.body.negotiationDetails.buyerSatisfaction){
+            if(req.body.negotiationDetails.buyerSatisfaction=="Satisfied"){
                 negotiation.negotiationDetails.buyerSatisfaction = "Satisfied";
                 await negotiation.save();
             }
