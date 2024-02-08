@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const negotiationValidationSchema = Joi.object({
     seller: Joi.object({
-        _id: Joi.string().required(),
+        _id: Joi.string().required()/*,
         name: Joi.string().required(),
         location: Joi.object({
             city: Joi.string().required(),
@@ -18,10 +18,10 @@ const negotiationValidationSchema = Joi.object({
             review: Joi.string().required(),
             rating: Joi.number().min(0).max(5).required(),
             date: Joi.date().required()
-        }))
+        }))*/
     }),
     buyer: Joi.object({
-        _id: Joi.string().required(),
+        _id: Joi.string().required()/*,
         name: Joi.string().required(),
         location: Joi.object({
             city: Joi.string().required(),
@@ -37,7 +37,7 @@ const negotiationValidationSchema = Joi.object({
             review: Joi.string().required(),
             rating: Joi.number().min(0).max(5).required(),
             date: Joi.date().required()
-        }))
+        }))*/
     }),
     productDetails: Joi.object({
         productName: Joi.string().required(),
