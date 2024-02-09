@@ -58,7 +58,7 @@ const createNegotiation = async (req,res) =>{
     }
 }
 
-
+var flag
 //fetch negotiation
 const getNegotiation = async (req, res) => {
     const { id } = req.params;
@@ -110,8 +110,7 @@ const updateNegotiation = async (req, res) => {
         }
 
         // Extract the allowed parameters from the request body
-        const allowedUpdates = Object.keys(req.body.productDetails);
-
+        const allowedUpdates = req.body.productDetails ? Object.keys(req.body.productDetails) : [];
         // Check if all update parameters are allowed
         const isValidOperation = allowedUpdates.every((update) => Object.keys(negotiation.productDetails).includes(update));
         if (!isValidOperation) {
@@ -135,25 +134,52 @@ const updateNegotiation = async (req, res) => {
                 negotiation.negotiationDetails.buyerScore.push(...req.body.negotiationDetails.buyerScore);
             if(req.body.negotiationDetails.sellerScore)
                 negotiation.negotiationDetails.sellerScore.push(...req.body.negotiationDetails.sellerScore);
+
             if(req.body.negotiationDetails.sellerSatisfaction=="Satisfied"){
                 negotiation.negotiationDetails.sellerSatisfaction = "Satisfied";
                 await negotiation.save();
             }
+            
             if(req.body.negotiationDetails.buyerSatisfaction=="Satisfied"){
                 negotiation.negotiationDetails.buyerSatisfaction = "Satisfied";
                 await negotiation.save();
             }
             // Switch turn between seller and buyer
             negotiation.negotiationDetails.turn = currentUser;
-
             //if both satisfied , change the state to closed and send all negotiation details to both the parties to their email
-            if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && negotiation.negotiationDetails.sellerSatisfaction=="Satisfied"){
+            if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && allowedUpdates.length == 0){
                 negotiation.negotiationDetails.state="SUCCESSFUL";
                 await negotiation.save();
                 await sendSuccessEmail(negotiation);
-                console.log("Negotiation has been closed since Both parties are satisfied.");
+                flag=0
             }
-
+            else if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && allowedUpdates.length >0 && flag==1){
+                console.log("1")
+                negotiation.negotiationDetails.sellerSatisfaction="Unsatisfied";
+                flag=0;
+                await negotiation.save();
+            }
+            else if(negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && allowedUpdates.length >0 &&flag==1){
+                console.log("2")
+                negotiation.negotiationDetails.buyerSatisfaction="Unsatisfied";
+                flag=0;
+                await negotiation.save();
+            }
+            else if(negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && flag==0){
+                console.log("3")
+                flag=1;
+                negotiation.negotiationDetails.buyerSatisfaction="Unsatisfied";
+                await negotiation.save();
+            }
+            else if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && flag==0){
+                console.log("4")
+                flag=1;
+                negotiation.negotiationDetails.sellerSatisfaction="Unsatisfied";
+                await negotiation.save();
+            }
+            else{
+                flag=0;
+            }
 
             // Check if the negotiation is going in a stale condition or not
             if (negotiation.negotiationDetails.buyerScore.length % 5 === 0 && negotiation.negotiationDetails.sellerScore.length % 5 === 0) {
