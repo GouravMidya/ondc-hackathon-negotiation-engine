@@ -108,7 +108,7 @@ const negotiationValidationSchema = Joi.object({
             who: Joi.string().valid('seller', 'buyer').required(),
             timestamp: Joi.date().required()
         }))
-    }),
+    }).required(),
     negotiationDetails: Joi.object({
         sellerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied'),
         buyerSatisfaction: Joi.string().valid('Satisfied', 'Unsatisfied'),
