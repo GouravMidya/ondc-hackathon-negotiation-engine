@@ -151,23 +151,29 @@ const updateNegotiation = async (req, res) => {
                 negotiation.negotiationDetails.state="SUCCESSFUL";
                 await negotiation.save();
                 await sendSuccessEmail(negotiation);
+                console.log("if")
                 flag=0
             }
             else if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && allowedUpdates.length >0 && flag==1){
                 negotiation.negotiationDetails.buyerSatisfaction="Unsatisfied";
+                console.log("elseif")
                 flag=0;
+                console.log(flag)
                 await negotiation.save();
             }
             else if(negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && allowedUpdates.length >0 &&flag==1){
                 negotiation.negotiationDetails.sellerSatisfaction="Unsatisfied";
                 flag=0;
+                console.log(flag)
                 await negotiation.save();
             }
-            else if(negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && allowedUpdates.length >0 && flag==0){
+            else if(negotiation.negotiationDetails.sellerSatisfaction=="Satisfied" && flag==0){
+                console.log(flag)
                 flag=1;
+                console.log(flag)
                 negotiation.negotiationDetails.sellerSatisfaction="Unsatisfied";
             }
-            else if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && allowedUpdates.length >0 && flag==0){
+            else if(negotiation.negotiationDetails.buyerSatisfaction=="Satisfied" && flag==0){
                 flag=1;
                 negotiation.negotiationDetails.buyerSatisfaction="Unsatisfied";
             }
