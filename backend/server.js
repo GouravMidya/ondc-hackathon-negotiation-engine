@@ -1,6 +1,8 @@
 //sensitive info hiding
 require('dotenv').config()
 
+const path = require('path');
+
 //framework and database operations
 const express = require('express')
 const mongoose = require('mongoose')
@@ -19,6 +21,10 @@ app.use((req,res,next) =>{
     console.log(req.path,req.method)
     next()
 })
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 //routes
 app.use('/api/negotiation',negotiationRoutes)
