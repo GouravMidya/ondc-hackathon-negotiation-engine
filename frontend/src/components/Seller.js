@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid } from '@mui/material';
 import ProductCard from './ProductCard';
 import AddProductDialog from './AddProductDialog';
+import EditProductDialog from './EditProductDialog';
+import NegotiationCard from './NegotiationCard';
 
 const Seller = () => {
   const [products, setProducts] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [currentNegotiations, setCurrentNegotiations] = useState([]);
+  const [negotiationHistory, setNegotiationHistory] = useState([]);
 
   useEffect(() => {
     // Fetch seller's catalogue from the backend
@@ -19,6 +25,29 @@ const Seller = () => {
       }
     };
     fetchProducts();
+
+    const fetchCurrentNegotiations = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/negotiation?state=OPEN');
+        const data = await response.json();
+        setCurrentNegotiations(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCurrentNegotiations();
+
+    // Fetch negotiation history from the backend
+    const fetchNegotiationHistory = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/negotiation?state=CLOSED');
+        const data = await response.json();
+        setNegotiationHistory(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchNegotiationHistory();
   }, []);
 
   const handleAddProduct = () => {
@@ -27,6 +56,35 @@ const Seller = () => {
 
   const handleCloseAddDialog = () => {
     setOpenAddDialog(false);
+  };
+
+  const handleEditProduct = (product) => {
+    setSelectedProduct(product);
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setSelectedProduct(null);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/catalogue/${productId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove the deleted product from the state
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product._id !== productId)
+        );
+      } else {
+        console.error('Failed to delete product');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -44,7 +102,31 @@ const Seller = () => {
         <Grid container spacing={2} mt={2}>
           {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <ProductCard product={product} />
+              <ProductCard
+                product={product}
+                handleEditProduct={handleEditProduct}
+                handleDeleteProduct={handleDeleteProduct}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        <Typography variant="h5" component="h2" gutterBottom mt={4}>
+          Current Negotiations
+        </Typography>
+        <Grid container spacing={2}>
+          {currentNegotiations.map((negotiation) => (
+            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
+              <NegotiationCard negotiation={negotiation} />
+            </Grid>
+          ))}
+        </Grid>
+        <Typography variant="h5" component="h2" gutterBottom mt={4}>
+          Negotiation History
+        </Typography>
+        <Grid container spacing={2}>
+          {negotiationHistory.map((negotiation) => (
+            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
+              <NegotiationCard negotiation={negotiation} />
             </Grid>
           ))}
         </Grid>
@@ -52,6 +134,11 @@ const Seller = () => {
       <AddProductDialog
         open={openAddDialog}
         onClose={handleCloseAddDialog}
+      />
+      <EditProductDialog
+        open={openEditDialog}
+        onClose={handleCloseEditDialog}
+        product={selectedProduct}
       />
     </Container>
   );

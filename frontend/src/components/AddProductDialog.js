@@ -19,12 +19,13 @@ const AddProductDialog = ({ open, onClose }) => {
 
   const handleAddProduct = async () => {
     try {
-      const response = await fetch('/api/catalogue', {
+      const response = await fetch('http://localhost:4000/api/catalogue', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          sellerId:"65c4e9d4ce6db7b70738c228",
           productName,
           productDescription,
           productCategory,
