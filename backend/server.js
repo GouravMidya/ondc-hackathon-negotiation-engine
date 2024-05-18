@@ -10,6 +10,7 @@ const mongoose = require('mongoose')
 //to handle requests to server
 const negotiationRoutes = require('./routes/negotiationEndpoints')
 const userRoutes = require('./routes/userEndpoints')
+const catalogueRoutes = require('./routes/catalogueEndpoints');
 
 //express app
 const app = express()
@@ -29,6 +30,7 @@ app.get('/', function(req, res) {
 //routes
 app.use('/api/negotiation',negotiationRoutes)
 app.use('/api/users',userRoutes)
+app.use('/api/catalogue', catalogueRoutes);
 
 //mongodb
 mongoose.connect(process.env.MONG_URI)
