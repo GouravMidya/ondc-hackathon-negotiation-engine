@@ -5,6 +5,7 @@ const path = require('path');
 
 //framework and database operations
 const express = require('express')
+const cors = require('cors');
 const mongoose = require('mongoose')
 
 //to handle requests to server
@@ -14,6 +15,9 @@ const catalogueRoutes = require('./routes/catalogueEndpoints');
 
 //express app
 const app = express()
+
+// Apply the cors middleware
+app.use(cors());
 
 //middleware
 app.use(express.json())
