@@ -19,6 +19,7 @@ const Seller = () => {
       try {
         const response = await fetch('http://localhost:4000/api/catalogue');
         const data = await response.json();
+        console.log(data);
         setProducts(data);
       } catch (err) {
         console.error(err);
