@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, CardActions } from '@mui/material';
 
-const ProductCard = ({ product, handleEditProduct, handleDeleteProduct }) => {
+const ProductCard = ({ product, isSeller, handleEditProduct, handleDeleteProduct, handleMakeOffer }) => {
   return (
     <Card>
       <CardContent>
@@ -32,12 +32,20 @@ const ProductCard = ({ product, handleEditProduct, handleDeleteProduct }) => {
         )}
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary" onClick={() => handleEditProduct(product)}>
-          Edit
-        </Button>
-        <Button size="small" color="secondary" onClick={() => handleDeleteProduct(product._id)}>
-          Delete
-        </Button>
+        {isSeller ? (
+          <>
+            <Button size="small" color="primary" onClick={() => handleEditProduct(product)}>
+              Edit
+            </Button>
+            <Button size="small" color="secondary" onClick={() => handleDeleteProduct(product._id)}>
+              Delete
+            </Button>
+          </>
+        ) : (
+          <Button size="small" color="primary" onClick={() => handleMakeOffer(product)}>
+            Make an Offer
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

@@ -16,6 +16,9 @@ const AddProductDialog = ({ open, onClose }) => {
   const [quantity, setQuantity] = useState('');
   const [warranty, setWarranty] = useState('');
   const [discount, setDiscount] = useState('');
+  const [financing,setFinancing] = useState('');
+  const [settlement_cycle,setSettlementCycle] = useState('');
+
 
   const handleAddProduct = async () => {
     try {
@@ -56,6 +59,7 @@ const AddProductDialog = ({ open, onClose }) => {
     }
   };
 
+  
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Product</DialogTitle>
@@ -63,7 +67,7 @@ const AddProductDialog = ({ open, onClose }) => {
         <TextField
           autoFocus
           margin="dense"
-          label="Product Name"
+          label="*Product Name"
           type="text"
           fullWidth
           value={productName}
@@ -71,7 +75,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Product Description"
+          label="*Product Description"
           type="text"
           fullWidth
           value={productDescription}
@@ -79,7 +83,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Product Category"
+          label="*Product Category"
           type="text"
           fullWidth
           value={productCategory}
@@ -87,7 +91,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Price"
+          label="*Price"
           type="number"
           fullWidth
           value={price}
@@ -95,7 +99,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Quantity"
+          label="*Quantity"
           type="number"
           fullWidth
           value={quantity}
@@ -103,7 +107,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Warranty"
+          label="*Warranty"
           type="text"
           fullWidth
           value={warranty}
@@ -111,11 +115,29 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Discount"
+          label="*Discount"
           type="number"
           fullWidth
           value={discount}
           onChange={(e) => setDiscount(e.target.value)}
+        />
+
+        <TextField
+          margin="dense"
+          label="Financing"
+          type="number"
+          fullWidth
+          value={financing}
+          onChange={(e) => setFinancing(e.target.value)}
+        />
+        
+        <TextField
+          margin="dense"
+          label="Settlement Cycle"
+          type="number"
+          fullWidth
+          value={settlement_cycle}
+          onChange={(e) => setSettlementCycle(e.target.value)}
         />
       </DialogContent>
       <DialogActions>

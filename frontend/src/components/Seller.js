@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid } from '@mui/material';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCardSeller';
 import AddProductDialog from './AddProductDialog';
 import EditProductDialog from './EditProductDialog';
 import NegotiationCard from './NegotiationCard';
