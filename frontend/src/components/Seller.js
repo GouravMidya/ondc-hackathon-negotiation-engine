@@ -3,7 +3,7 @@ import { Container, Typography, Box, Button, Grid } from '@mui/material';
 import ProductCard from './ProductCardSeller';
 import AddProductDialog from './AddProductDialog';
 import EditProductDialog from './EditProductDialog';
-import NegotiationCard from './NegotiationCard';
+import NegotiationCard from './NegotiationCardSeller';
 
 const Seller = () => {
   const [products, setProducts] = useState([]);
@@ -19,7 +19,6 @@ const Seller = () => {
       try {
         const response = await fetch('http://localhost:4000/api/catalogue');
         const data = await response.json();
-        console.log(data);
         setProducts(data);
       } catch (err) {
         console.error(err);
@@ -27,28 +26,25 @@ const Seller = () => {
     };
     fetchProducts();
 
-    const fetchCurrentNegotiations = async () => {
+    // Fetch all negotiations from the backend
+    const fetchNegotiations = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/negotiation?state=OPEN');
+        const response = await fetch('http://localhost:4000/api/negotiation');
         const data = await response.json();
-        setCurrentNegotiations(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCurrentNegotiations();
 
-    // Fetch negotiation history from the backend
-    const fetchNegotiationHistory = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/negotiation?state=CLOSED');
-        const data = await response.json();
-        setNegotiationHistory(data);
+        // Filter negotiations based on state
+        const current = data.filter(negotiation => negotiation.negotiationDetails.state === 'OPEN');
+        const history = data.filter(negotiation => 
+          negotiation.negotiationDetails.state === 'CLOSED' || negotiation.negotiationDetails.state === 'SUCCESSFUL'
+        );
+
+        setCurrentNegotiations(current);
+        setNegotiationHistory(history);
       } catch (err) {
         console.error(err);
       }
     };
-    fetchNegotiationHistory();
+    fetchNegotiations();
   }, []);
 
   const handleAddProduct = () => {
