@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, IconButton, Box, Collapse, Button } from '@mui/material';
+import { Card, CardContent, Typography, IconButton, Box, Collapse, Button, CardActions  } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { Link } from 'react-router-dom';
 
 const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
   const [expanded, setExpanded] = useState(false);
@@ -75,7 +76,7 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
             </Typography>
           </Collapse>
 
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -100,9 +101,28 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
               {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </IconButton>
             
-          </Box>
+          </Box> */}
         </Box>
       </CardContent>
+      <CardActions>
+        <Button
+          size="small"
+          color="primary"
+          component={Link}
+          to={`/seller/negotiation-details`}
+          state={{ negotiation }}
+        >
+          View Details
+        </Button>
+        <IconButton
+              size="small"
+              onClick={handleExpandClick}
+              aria-label={expanded ? 'show less' : 'show more'}
+              sx={{ color: expanded ? 'primary.main' : 'inherit' }}
+            >
+              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
+      </CardActions>
     </Card>
   );
 };

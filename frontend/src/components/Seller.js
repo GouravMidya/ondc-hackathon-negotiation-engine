@@ -1,119 +1,27 @@
-// Seller.js
-
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, Grid } from '@mui/material';
-import ProductCardSeller from './ProductCardSeller';
-import AddProductDialog from './AddProductDialog';
-import EditProductDialog from './EditProductDialog';
-import NegotiationCardSeller from './NegotiationCardSeller';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Box, Tabs, Tab } from '@mui/material';
+import ProductsTab from './ProductsTab';
+import CurrentNegotiationsTab from './CurrentNegotiationsTab';
+import NegotiationHistoryTab from './NegotiationHistoryTab';
+import { useLocation } from 'react-router-dom';
 
 const Seller = () => {
-  const [products, setProducts] = useState([]);
-  const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [currentNegotiations, setCurrentNegotiations] = useState([]);
-  const [negotiationHistory, setNegotiationHistory] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
-    // Fetch seller's catalogue from the backend
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/catalogue');
-        const data = await response.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchProducts();
-
-    // Fetch all negotiations from the backend
-    const fetchNegotiations = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/negotiation');
-        const data = await response.json();
-
-        // Filter negotiations based on state
-        const current = data.filter(negotiation => negotiation.negotiationDetails.state === 'OPEN');
-        const history = data.filter(negotiation => 
-          negotiation.negotiationDetails.state === 'CLOSED' || negotiation.negotiationDetails.state === 'SUCCESSFUL'
-        );
-
-        setCurrentNegotiations(current);
-        setNegotiationHistory(history);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchNegotiations();
-  }, []);
-
-  // Define handleAcceptDeal function
-  const handleAcceptDeal = async (negotiationId) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          negotiationDetails: {
-            sellerSatisfaction: 'Satisfied',
-            turn: 'seller',
-          },
-        }),
-      });
-
-      if (response.ok) {
-        // Handle success (optional)
-        console.log('Negotiation updated successfully');
-        // Optionally update UI or perform any other action upon successful update
-      } else {
-        // Handle error
-        console.error('Failed to update negotiation');
-      }
-    } catch (error) {
-      // Handle error
-      console.error('Failed to update negotiation', error);
+    const path = location.pathname;
+    if (path === '/seller/products') {
+      setSelectedTab(0);
+    } else if (path === '/seller/current-negotiations') {
+      setSelectedTab(1);
+    } else if (path === '/seller/negotiation-history') {
+      setSelectedTab(2);
     }
-  };
+  }, [location.pathname]);
 
-  const handleAddProduct = () => {
-    setOpenAddDialog(true);
-  };
-
-  const handleCloseAddDialog = () => {
-    setOpenAddDialog(false);
-  };
-
-  const handleEditProduct = (product) => {
-    setSelectedProduct(product);
-    setOpenEditDialog(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setOpenEditDialog(false);
-    setSelectedProduct(null);
-  };
-
-  const handleDeleteProduct = async (productId) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/catalogue/${productId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        // Remove the deleted product from the state
-        setProducts((prevProducts) =>
-          prevProducts.filter((product) => product._id !== productId)
-        );
-      } else {
-        console.error('Failed to delete product');
-      }
-    } catch (err) {
-      console.error(err);
-    }
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
   };
 
   return (
@@ -122,53 +30,15 @@ const Seller = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Seller
         </Typography>
-        <Typography variant="body1" gutterBottom>
-          Here you can manage your product catalogue.
-        </Typography>
-        <Button variant="contained" color="primary" onClick={handleAddProduct}>
-          Add Product
-        </Button>
-        <Grid container spacing={2} mt={2}>
-          {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <ProductCardSeller
-                product={product}
-                handleEditProduct={handleEditProduct}
-                handleDeleteProduct={handleDeleteProduct}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        <Typography variant="h5" component="h2" gutterBottom mt={4}>
-          Current Negotiations
-        </Typography>
-        <Grid container spacing={2}>
-          {currentNegotiations.map((negotiation) => (
-            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCardSeller negotiation={negotiation} handleAcceptDeal={handleAcceptDeal} />
-            </Grid>
-          ))}
-        </Grid>
-        <Typography variant="h5" component="h2" gutterBottom mt={4}>
-          Negotiation History
-        </Typography>
-        <Grid container spacing={2}>
-          {negotiationHistory.map((negotiation) => (
-            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCardSeller negotiation={negotiation} />
-            </Grid>
-          ))}
-        </Grid>
+        <Tabs value={selectedTab} onChange={handleTabChange}>
+          <Tab label="Products" />
+          <Tab label="Current Negotiations" />
+          <Tab label="Negotiation History" />
+        </Tabs>
+        {selectedTab === 0 && <ProductsTab />}
+        {selectedTab === 1 && <CurrentNegotiationsTab />}
+        {selectedTab === 2 && <NegotiationHistoryTab />}
       </Box>
-      <AddProductDialog
-        open={openAddDialog}
-        onClose={handleCloseAddDialog}
-      />
-      <EditProductDialog
-        open={openEditDialog}
-        onClose={handleCloseEditDialog}
-        product={selectedProduct}
-      />
     </Container>
   );
 };
