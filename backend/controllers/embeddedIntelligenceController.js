@@ -8,10 +8,11 @@ const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.mail,
-        pass: process.env.pass
+        user: process.env.MAIL, // Ensure the correct environment variable name
+        pass: process.env.PASS  // Ensure the correct environment variable name
     }
 });
+
 
 
 // Sending mail when Negotiation is successful

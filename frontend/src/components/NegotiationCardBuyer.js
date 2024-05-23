@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, IconButton, Box, Collapse } from '@mui/material';
+import { Card, CardContent, Typography, IconButton, Box, Collapse, Button  } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const NegotiationCard = ({ negotiation }) => {
+const NegotiationCardBuyer = ({ negotiation, handleAcceptDeal }) => {
   const [expanded, setExpanded] = useState(false);
 
   const lastValue = (field) => field[field.length - 1]?.value;
@@ -83,6 +83,14 @@ const NegotiationCard = ({ negotiation }) => {
               mt: 1,
             }}
           >
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => handleAcceptDeal(negotiation._id)}
+              disabled={negotiation.negotiationDetails.state !== 'OPEN'}
+            >
+              Accept Deal
+            </Button>
             <IconButton
               size="small"
               onClick={handleExpandClick}
@@ -98,4 +106,4 @@ const NegotiationCard = ({ negotiation }) => {
   );
 };
 
-export default NegotiationCard;
+export default NegotiationCardBuyer;

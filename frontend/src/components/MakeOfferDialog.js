@@ -36,8 +36,8 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           discount: [{ value: product.discount, who: 'seller', timestamp: new Date() }],
         },
         negotiationDetails: {
-          sellerSatisfaction: 'Unsatisfied',
-          buyerSatisfaction: 'Unsatisfied',
+          sellerSatisfaction: 'Satisfied',
+          buyerSatisfaction:'Unsatisfied',
           sellerScore: [0],
           buyerScore: [0],
           state: 'OPEN',
@@ -84,9 +84,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
             discount: [{ value: offer.discount, who: 'buyer', timestamp: new Date() }], // Add timestamp here
           },
           negotiationDetails: {
-            sellerSatisfaction: 'Unsatisfied',
-            buyerSatisfaction: 'Unsatisfied',
-            sellerScore: [0],
+            buyerSatisfaction: 'Satisfied',
             buyerScore: [0],
             state: 'OPEN',
             turn: 'buyer'

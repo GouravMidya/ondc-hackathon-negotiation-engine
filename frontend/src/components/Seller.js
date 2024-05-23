@@ -1,9 +1,11 @@
+// Seller.js
+
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid } from '@mui/material';
-import ProductCard from './ProductCardSeller';
+import ProductCardSeller from './ProductCardSeller';
 import AddProductDialog from './AddProductDialog';
 import EditProductDialog from './EditProductDialog';
-import NegotiationCard from './NegotiationCardSeller';
+import NegotiationCardSeller from './NegotiationCardSeller';
 
 const Seller = () => {
   const [products, setProducts] = useState([]);
@@ -46,6 +48,36 @@ const Seller = () => {
     };
     fetchNegotiations();
   }, []);
+
+  // Define handleAcceptDeal function
+  const handleAcceptDeal = async (negotiationId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          negotiationDetails: {
+            sellerSatisfaction: 'Satisfied',
+            turn: 'seller',
+          },
+        }),
+      });
+
+      if (response.ok) {
+        // Handle success (optional)
+        console.log('Negotiation updated successfully');
+        // Optionally update UI or perform any other action upon successful update
+      } else {
+        // Handle error
+        console.error('Failed to update negotiation');
+      }
+    } catch (error) {
+      // Handle error
+      console.error('Failed to update negotiation', error);
+    }
+  };
 
   const handleAddProduct = () => {
     setOpenAddDialog(true);
@@ -99,7 +131,7 @@ const Seller = () => {
         <Grid container spacing={2} mt={2}>
           {products.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <ProductCard
+              <ProductCardSeller
                 product={product}
                 handleEditProduct={handleEditProduct}
                 handleDeleteProduct={handleDeleteProduct}
@@ -113,7 +145,7 @@ const Seller = () => {
         <Grid container spacing={2}>
           {currentNegotiations.map((negotiation) => (
             <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCard negotiation={negotiation} />
+              <NegotiationCardSeller negotiation={negotiation} handleAcceptDeal={handleAcceptDeal} />
             </Grid>
           ))}
         </Grid>
@@ -123,7 +155,7 @@ const Seller = () => {
         <Grid container spacing={2}>
           {negotiationHistory.map((negotiation) => (
             <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCard negotiation={negotiation} />
+              <NegotiationCardSeller negotiation={negotiation} />
             </Grid>
           ))}
         </Grid>

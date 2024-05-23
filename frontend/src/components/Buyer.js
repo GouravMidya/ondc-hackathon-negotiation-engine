@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Grid } from '@mui/material';
 import ProductCard from './ProductCardBuyer';
 import MakeOfferDialog from './MakeOfferDialog'; // Import the new dialog component
-import NegotiationCard from './NegotiationCardBuyer'; // Import the negotiation card component
+import NegotiationCardBuyer from './NegotiationCardBuyer';
 
 const Buyer = () => {
   const [products, setProducts] = useState([]);
@@ -45,6 +45,36 @@ const Buyer = () => {
     fetchNegotiations();
   }, []);
 
+  // Define handleAcceptDeal function
+  const handleAcceptDeal = async (negotiationId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          negotiationDetails: {
+            buyerSatisfaction: 'Satisfied',
+            turn: 'buyer',
+          },
+        }),
+      });
+
+      if (response.ok) {
+        // Handle success (optional)
+        console.log('Negotiation updated successfully');
+        // Optionally update UI or perform any other action upon successful update
+      } else {
+        // Handle error
+        console.error('Failed to update negotiation');
+      }
+    } catch (error) {
+      // Handle error
+      console.error('Failed to update negotiation', error);
+    }
+  };
+
   const handleMakeOffer = (product) => {
     setSelectedProduct(product);
     setOpenOfferDialog(true);
@@ -77,7 +107,7 @@ const Buyer = () => {
         <Grid container spacing={2}>
           {currentNegotiations.map((negotiation) => (
             <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCard negotiation={negotiation} />
+              <NegotiationCardBuyer negotiation={negotiation} handleAcceptDeal={handleAcceptDeal} />
             </Grid>
           ))}
         </Grid>
@@ -87,7 +117,7 @@ const Buyer = () => {
         <Grid container spacing={2}>
           {negotiationHistory.map((negotiation) => (
             <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCard negotiation={negotiation} />
+              <NegotiationCardBuyer negotiation={negotiation} />
             </Grid>
           ))}
         </Grid>
