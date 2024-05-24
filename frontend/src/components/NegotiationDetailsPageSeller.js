@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Typography, Button, Box, Grid, Paper, Divider, List, ListItem, ListItemText, Chip, Collapse, IconButton } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CounterOfferDialog from './CounterOfferDialogBuyer';
+import CounterOfferDialog from './CounterOfferDialogSeller';
 import { useLocation } from 'react-router-dom';
 
-const NegotiationDetailsPage = () => {
+const NegotiationDetailsPageSeller = () => {
   const location = useLocation();
   const negotiation = location.state?.negotiation;
 
@@ -28,17 +28,6 @@ const NegotiationDetailsPage = () => {
     );
   };
 
-  const handleCounterOffer = () => {
-    if (isActionAllowed()) {
-      setCounterOfferDialogOpen(true);
-    } else {
-      console.log('Counter offer not allowed for this negotiation status.');
-    }
-  };
-
-  const handleCloseCounterOfferDialog = () => {
-    setCounterOfferDialogOpen(false);
-  };
 
   const handleAcceptDeal = async () => {
     if (isActionAllowed()) {
@@ -53,7 +42,7 @@ const NegotiationDetailsPage = () => {
           body: JSON.stringify({
             negotiationDetails: {
               buyerSatisfaction: 'Satisfied',
-              turn: 'buyer',
+              turn: 'seller',
             },
           }),
         });
@@ -68,6 +57,18 @@ const NegotiationDetailsPage = () => {
       }
     } else {
       console.log('Accepting deal not allowed for this negotiation status.');
+    }
+  };
+
+  const handleCloseCounterOfferDialog = () => {
+    setCounterOfferDialogOpen(false);
+  };
+
+  const handleCounterOffer = () => {
+    if (isActionAllowed()) {
+      setCounterOfferDialogOpen(true);
+    } else {
+      console.log('Counter offer not allowed for this negotiation status.');
     }
   };
 
@@ -244,7 +245,6 @@ const NegotiationDetailsPage = () => {
           color="primary"
           onClick={handleCounterOffer}
           disabled={!isActionAllowed()} // Disable the button based on negotiation status
-          style={{ marginLeft: '1rem', backgroundColor: !isActionAllowed() ? '#e0e0e0' : '' }} // Change background color to grey when disabled
         >
           Counter Offer
         </Button>
@@ -269,4 +269,4 @@ const NegotiationDetailsPage = () => {
   );
 };
 
-export default NegotiationDetailsPage;
+export default NegotiationDetailsPageSeller;

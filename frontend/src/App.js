@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Buyer from './components/Buyer';
 import Seller from './components/Seller';
 import NegotiationDetailsPage from './components/NegotiationDetailsPage';
+import NegotiationDetailsPageSeller from './components/NegotiationDetailsPageSeller';
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
         <Route path="/seller/products" element={<Seller />} />
         <Route path="/seller/current-negotiations" element={<Seller />} />
         <Route path="/seller/negotiation-history" element={<Seller />} />
-        <Route path="/seller/negotiation-details" element={<NegotiationDetailsPage />} />
+        <Route path="/seller/negotiation-details" element={<NegotiationDetailsPageSeller />} />
       </Routes>
     </Router>
   );

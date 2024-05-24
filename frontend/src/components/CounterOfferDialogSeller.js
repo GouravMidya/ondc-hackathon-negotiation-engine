@@ -41,10 +41,10 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
             productName: product.productName,
             productDescription: product.productDescription,
             productCategory: product.productCategory,
-            priceHistory: [...product.priceHistory, { value: offer.price, who: 'seller', timestamp: new Date() }],
-            quantity: [...product.quantity, { value: offer.quantity, who: 'seller', timestamp: new Date() }],
-            warranty: [...product.warranty, { value: offer.warranty, who: 'seller', timestamp: new Date() }],
-            discount: [...product.discount, { value: offer.discount, who: 'seller', timestamp: new Date() }],
+            priceHistory: [{ value: offer.price, who: 'seller', timestamp: new Date() }],
+            quantity: [{ value: offer.quantity, who: 'seller', timestamp: new Date() }],
+            warranty: [ { value: offer.warranty, who: 'seller', timestamp: new Date() }],
+            discount: [{ value: offer.discount, who: 'seller', timestamp: new Date() }],
           },
           negotiationDetails: {
             sellerSatisfaction: 'Satisfied',
@@ -54,6 +54,10 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
           }
         }),
       });
+
+      if(response.status===403){
+        alert("You have already made the latest offer");
+      }
 
       if (response.ok) {
         console.log('Negotiation updated successfully');

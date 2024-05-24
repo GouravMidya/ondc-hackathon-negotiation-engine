@@ -109,6 +109,12 @@ const updateNegotiation = async (req, res) => {
             return res.status(400).json({ error: "Negotiation is already closed and cannot be updated." });
         }
 
+        // Check if the user making the request is the same as the current turn
+        const currentUser = req.body.negotiationDetails.turn;
+        if (currentUser === negotiation.negotiationDetails.turn) {
+            return res.status(403).json({ error: "Same user cannot update negotiation twice in a row." });
+        }
+
         // Extract the allowed parameters from the request body
         const allowedUpdates = req.body.productDetails ? Object.keys(req.body.productDetails) : [];
         // Check if all update parameters are allowed
@@ -116,9 +122,6 @@ const updateNegotiation = async (req, res) => {
         if (!isValidOperation) {
             return res.status(400).json({ error: "Invalid updates!" });
         }
-
-        // Extract the user from the 'who' field of the negotiation parameters
-        const currentUser = req.body.negotiationDetails.turn;
 
         // Check if the user making the request is allowed to update negotiations based on the turn
         if (currentUser && currentUser !== negotiation.negotiationDetails.turn) {
