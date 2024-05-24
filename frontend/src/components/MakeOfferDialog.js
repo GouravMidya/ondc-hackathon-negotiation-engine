@@ -68,12 +68,6 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          buyer: {
-            _id: '664a3c452fbec0db56b08beb' // Replace with actual buyer ID
-          },
-          seller: {
-            _id: '65c4e9d4ce6db7b70738c228' // Replace with actual seller ID
-          },
           productDetails: {
             productName: product.productName,
             productDescription: product.productDescription,

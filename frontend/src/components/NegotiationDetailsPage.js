@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Button, Box } from '@mui/material';
 import NegotiationDetailsChart from './NegotiationDetailsChart';
+import CounterOfferDialog from './CounterOfferDialogSeller';
 import { useLocation } from 'react-router-dom';
 
 const NegotiationDetailsPage = () => {
   const location = useLocation();
   const negotiation = location.state?.negotiation;
 
+  const [isCounterOfferDialogOpen, setCounterOfferDialogOpen] = useState(false);
+
   const handleCounterOffer = () => {
-    // Logic for counter offer goes here
-    console.log('Counter offer functionality will be implemented here.');
+    setCounterOfferDialogOpen(true);
+  };
+
+  const handleCloseCounterOfferDialog = () => {
+    setCounterOfferDialogOpen(false);
   };
 
   const handleAcceptDeal = () => {
@@ -41,6 +47,12 @@ const NegotiationDetailsPage = () => {
           Accept Deal
         </Button>
       </Box>
+
+      <CounterOfferDialog
+        open={isCounterOfferDialogOpen}
+        onClose={handleCloseCounterOfferDialog}
+        negotiation={negotiation}
+      />
     </Box>
   ) : (
     <div>Loading...</div>

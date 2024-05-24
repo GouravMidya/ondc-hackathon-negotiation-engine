@@ -159,7 +159,6 @@ const checkNegotiationStatus = async (negotiation) => {
     const buyerPercentChange = (buyerScore[buyerScore.length - 1] - buyerScore[buyerScore.length - 5]) / buyerScore[buyerScore.length - 5] * 100;
     
     const sellerPercentChange = (sellerScore[sellerScore.length - 1] - sellerScore[sellerScore.length - 5]) / sellerScore[sellerScore.length - 5] * 100;
-    console.log(sellerPercentChange)
     // Check if scores are above 75 and percent change is close to 0
     if (buyerScore[buyerScore.length - 1] > 75 && sellerScore[sellerScore.length - 1] > 75 && Math.abs(buyerPercentChange) < 10 && Math.abs(sellerPercentChange) < 10) {
         // If the alert has not been sent yet, send it
