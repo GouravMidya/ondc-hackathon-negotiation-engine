@@ -113,7 +113,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         <Typography variant="h6">{product && product.productName}</Typography>
         <TextField
           margin="dense"
-          label="Price *"
+          label="Price"
           type="number"
           fullWidth
           name="price"
@@ -124,7 +124,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
-          label="Quantity *"
+          label="Quantity"
           type="number"
           fullWidth
           name="quantity"
@@ -142,6 +142,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           value={offer.warranty}
           placeholder={product ? product.warranty : ''}
           onChange={handleChange}
+          required
         />
         <TextField
           margin="dense"

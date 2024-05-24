@@ -3,12 +3,16 @@ import { Card, CardContent, Typography, IconButton, Box, Collapse, Button, CardA
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { Link } from 'react-router-dom';
+import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 
 const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
   const [expanded, setExpanded] = useState(false);
 
   const lastValue = (field) => field[field.length - 1]?.value;
-
+  const handleCopy = () => {
+    // Logic to copy the negotiation ID to clipboard
+    navigator.clipboard.writeText(negotiation._id);
+  };
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -24,9 +28,14 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
             height: '100%',
           }}
         >
-          <Typography variant="h6" component="div">
-            Negotiation ID: {negotiation._id}
+          <Box display="flex" alignItems="center" justifyContent="center">
+          <Typography variant="h6" component="div" sx={{ fontSize: '15px', fontWeight: 'bold' }}>
+            {negotiation._id}
           </Typography>
+          <IconButton aria-label="copy" onClick={handleCopy} size="small">
+            <FileCopyOutlinedIcon fontSize="small" />
+          </IconButton>
+        </Box>
           <Typography variant="body2" color="textSecondary">
             Buyer: {negotiation.buyer.name}
           </Typography>
@@ -39,11 +48,11 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
           <Typography variant="body2" color="textSecondary">
             Last Price: {lastValue(negotiation.productDetails.priceHistory)}
           </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+              Turn: {negotiation.negotiationDetails.turn}
+            </Typography>
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Seller: {negotiation.seller.name}
-            </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
               Description: {negotiation.productDetails.productDescription}
             </Typography>
@@ -68,12 +77,7 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
             <Typography variant="body2" color="textSecondary" component="p">
               Buyer Score: {negotiation.negotiationDetails.buyerScore[negotiation.negotiationDetails.buyerScore.length - 1]}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Seller Score: {negotiation.negotiationDetails.sellerScore[negotiation.negotiationDetails.sellerScore.length - 1]}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Turn: {negotiation.negotiationDetails.turn}
-            </Typography>
+            
           </Collapse>
 
           {/* <Box

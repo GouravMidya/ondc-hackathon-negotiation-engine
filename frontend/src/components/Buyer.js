@@ -1,88 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Grid } from '@mui/material';
-import ProductCard from './ProductCardBuyer';
-import MakeOfferDialog from './MakeOfferDialog'; // Import the new dialog component
-import NegotiationCardBuyer from './NegotiationCardBuyer';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Box, Tabs, Tab } from '@mui/material';
+import ProductsTab from './ProductsTabBuyer';
+import CurrentNegotiationsTab from './CurrentNegotiationsTabBuyer';
+import NegotiationHistoryTab from './NegotiationHistoryTab';
+import { useLocation } from 'react-router-dom';
 
 const Buyer = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [openOfferDialog, setOpenOfferDialog] = useState(false);
-  const [currentNegotiations, setCurrentNegotiations] = useState([]);
-  const [negotiationHistory, setNegotiationHistory] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
-    // Fetch products for buyers from the backend
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/catalogue');
-        const data = await response.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchProducts();
-
-    // Fetch all negotiations from the backend
-    const fetchNegotiations = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/negotiation');
-        const data = await response.json();
-
-        // Filter negotiations based on state
-        const current = data.filter(negotiation => negotiation.negotiationDetails.state === 'OPEN');
-        const history = data.filter(negotiation => 
-          negotiation.negotiationDetails.state === 'CLOSED' || negotiation.negotiationDetails.state === 'SUCCESSFUL'
-        );
-
-        setCurrentNegotiations(current);
-        setNegotiationHistory(history);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchNegotiations();
-  }, []);
-
-  // Define handleAcceptDeal function
-  const handleAcceptDeal = async (negotiationId) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          negotiationDetails: {
-            buyerSatisfaction: 'Satisfied',
-            turn: 'buyer',
-          },
-        }),
-      });
-
-      if (response.ok) {
-        // Handle success (optional)
-        console.log('Negotiation updated successfully');
-        // Optionally update UI or perform any other action upon successful update
-      } else {
-        // Handle error
-        console.error('Failed to update negotiation');
-      }
-    } catch (error) {
-      // Handle error
-      console.error('Failed to update negotiation', error);
+    const path = location.pathname;
+    if (path === '/buyer/products') {
+      setSelectedTab(0);
+    } else if (path === '/buyer/current-negotiations') {
+      setSelectedTab(1);
+    } else if (path === '/buyer/negotiation-history') {
+      setSelectedTab(2);
     }
-  };
+  }, [location.pathname]);
 
-  const handleMakeOffer = (product) => {
-    setSelectedProduct(product);
-    setOpenOfferDialog(true);
-  };
-
-  const handleCloseOfferDialog = () => {
-    setOpenOfferDialog(false);
-    setSelectedProduct(null);
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
   };
 
   return (
@@ -91,42 +30,15 @@ const Buyer = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Buyer
         </Typography>
-        <Typography variant="body1" gutterBottom>
-          Here you can browse and buy products, negotiate prices, and more.
-        </Typography>
-        <Grid container spacing={2} mt={2}>
-          {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <ProductCard product={product} isSeller={false} handleMakeOffer={handleMakeOffer} />
-            </Grid>
-          ))}
-        </Grid>
-        <Typography variant="h5" component="h2" gutterBottom mt={4}>
-          Current Negotiations
-        </Typography>
-        <Grid container spacing={2}>
-          {currentNegotiations.map((negotiation) => (
-            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCardBuyer negotiation={negotiation} handleAcceptDeal={handleAcceptDeal} />
-            </Grid>
-          ))}
-        </Grid>
-        <Typography variant="h5" component="h2" gutterBottom mt={4}>
-          Negotiation History
-        </Typography>
-        <Grid container spacing={2}>
-          {negotiationHistory.map((negotiation) => (
-            <Grid item xs={12} sm={6} md={4} key={negotiation._id}>
-              <NegotiationCardBuyer negotiation={negotiation} />
-            </Grid>
-          ))}
-        </Grid>
+        <Tabs value={selectedTab} onChange={handleTabChange}>
+          <Tab label="Products" />
+          <Tab label="Current Negotiations" />
+          <Tab label="Negotiation History" />
+        </Tabs>
+        {selectedTab === 0 && <ProductsTab />}
+        {selectedTab === 1 && <CurrentNegotiationsTab />}
+        {selectedTab === 2 && <NegotiationHistoryTab />}
       </Box>
-      <MakeOfferDialog
-        open={openOfferDialog}
-        onClose={handleCloseOfferDialog}
-        product={selectedProduct}
-      />
     </Container>
   );
 };

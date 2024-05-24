@@ -12,7 +12,11 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/buyer" element={<Buyer />} />
+        <Route path="/buyer/products" element={<Buyer />} />
+        <Route path="/buyer/current-negotiations" element={<Buyer />} />
+        <Route path="/buyer/negotiation-history" element={<Buyer />} />
+        <Route path="/buyer/negotiation-details" element={<NegotiationDetailsPage />} />
+
         <Route path="/seller/products" element={<Seller />} />
         <Route path="/seller/current-negotiations" element={<Seller />} />
         <Route path="/seller/negotiation-history" element={<Seller />} />
