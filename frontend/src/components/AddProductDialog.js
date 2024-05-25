@@ -7,6 +7,7 @@ import {
   Button,
   TextField,
 } from '@mui/material';
+import { API_URL } from '../utils/apiConfig';
 
 const AddProductDialog = ({ open, onClose }) => {
   const [productName, setProductName] = useState('');
@@ -47,7 +48,7 @@ const AddProductDialog = ({ open, onClose }) => {
 
     try {
       
-      const response = await fetch('http://localhost:4000/api/catalogue', {
+      const response = await fetch(`${API_URL}/api/catalogue`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

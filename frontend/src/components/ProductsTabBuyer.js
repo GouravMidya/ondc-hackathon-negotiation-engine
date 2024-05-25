@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Container } from '@mui/material';
 import ProductCardBuyer from './ProductCardBuyer';
 import MakeOfferDialog from './MakeOfferDialog'; // Import the new dialog component
+import { API_URL } from '../utils/apiConfig';
 
 const ProductsTab = () => {
   const [products, setProducts] = useState([]);
@@ -14,7 +15,7 @@ const ProductsTab = () => {
     // Fetch seller's catalogue from the backend
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/catalogue');
+        const response = await fetch(`${API_URL}/api/catalogue`);
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);

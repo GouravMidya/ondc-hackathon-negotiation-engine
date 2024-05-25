@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, TextField } from '@mui/material';
 import NegotiationCardSeller from './NegotiationCardSeller';
+import { API_URL } from '../utils/apiConfig';
 
 const NegotiationHistoryTab = () => {
   const [negotiationHistory, setNegotiationHistory] = useState([]);
@@ -12,7 +13,7 @@ const NegotiationHistoryTab = () => {
     // Fetch all negotiations from the backend
     const fetchNegotiations = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/negotiation');
+        const response = await fetch(`${API_URL}/api/negotiation`);
         const data = await response.json();
 
         // Filter negotiations based on state

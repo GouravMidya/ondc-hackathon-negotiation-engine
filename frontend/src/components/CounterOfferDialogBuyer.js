@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { API_URL } from '../utils/apiConfig';
 
 const CounterOfferDialog = ({ open, onClose, negotiation }) => {
   const [counterOffer, setCounterOffer] = useState({
@@ -31,7 +32,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
     const offer = counterOffer;
 
     try {
-      const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+      const response = await fetch(`${API_URL}/api/negotiation/${negotiationId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

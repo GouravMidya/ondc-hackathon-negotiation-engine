@@ -7,6 +7,7 @@ import {
   Button,
   TextField,
 } from '@mui/material';
+import { API_URL } from '../utils/apiConfig';
 
 const EditProductDialog = ({ open, onClose, product }) => {
   const [productName, setProductName] = useState('');
@@ -31,7 +32,7 @@ const EditProductDialog = ({ open, onClose, product }) => {
 
   const handleEditProduct = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/catalogue/${product._id}`, {
+      const response = await fetch(`${API_URL}/api/catalogue/${product._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

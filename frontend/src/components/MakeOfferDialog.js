@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography } from '@mui/material';
+import { API_URL } from '../utils/apiConfig';
 
 const MakeOfferDialog = ({ open, onClose, product }) => {
   const [offer, setOffer] = useState({
@@ -103,7 +104,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         };
   
         // Create the negotiation
-        const postResponse = await fetch('http://localhost:4000/api/negotiation/', {
+        const postResponse = await fetch(`${API_URL}/api/negotiation/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -120,7 +121,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         const negotiationId = responseData._id;
   
         // Update the negotiation with buyer's offer details
-        const patchResponse = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+        const patchResponse = await fetch(`${API_URL}/api/negotiation/${negotiationId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CounterOfferDialog from './CounterOfferDialogBuyer';
 import { useLocation } from 'react-router-dom';
+import { API_URL } from '../utils/apiConfig';
 
 const NegotiationDetailsPage = () => {
   const location = useLocation();
@@ -45,7 +46,7 @@ const NegotiationDetailsPage = () => {
       const negotiationId = negotiation._id;
 
       try {
-        const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+        const response = await fetch(`${API_URL}/api/negotiation/${negotiationId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
