@@ -25,9 +25,9 @@ const ProductCard = ({ product, isSeller, handleEditProduct, handleDeleteProduct
             Warranty: {product.warranty}
           </Typography>
         )}
-        {product.discount && (
+        {product.settlementWindow && (
           <Typography variant="body1" component="p">
-            Discount: {product.discount}%
+            settlementWindow: {product.settlementWindow}%
           </Typography>
         )}
       </CardContent>

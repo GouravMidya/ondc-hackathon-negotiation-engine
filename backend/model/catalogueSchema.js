@@ -5,14 +5,14 @@ const weightageSchema = new Schema({
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     warranty: { type: Number, required: true },
-    discount: { type: Number, required: true }
+    settlementWindow: { type: Number, required: true }
 }, { _id: false });
 
 const scoreImpactSchema = new Schema({
     price: { type: Number, default: 0 },
     quantity: { type: Number, default: 0 },
     warranty: { type: Number, default: 0 },
-    discount: { type: Number, default: 0 }
+    settlementWindow: { type: Number, default: 0 }
 }, { _id: false });
 
 const catalogueSchema = new Schema({
@@ -44,7 +44,7 @@ const catalogueSchema = new Schema({
     warranty: {
         type: String
     },
-    discount: {
+    settlementWindow: {
         type: Number
     },
     weightage: {

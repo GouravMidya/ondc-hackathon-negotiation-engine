@@ -6,18 +6,18 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
     price: product ? product.price : '',
     quantity: product ? product.quantity : '',
     warranty: product ? product.warranty : '',
-    discount: product ? product.discount : '',
+    settlementWindow: product ? product.settlementWindow : '',
     // Buyer's weightage and score impact
     buyerWeightage: {
       price: '',
       quantity: '',
-      discount: '',
+      settlementWindow: '',
       warranty: ''
     },
     buyerScoreImpact: {
       price: '',
       quantity: '',
-      discount: '',
+      settlementWindow: '',
       warranty: ''
     }
   });
@@ -66,29 +66,29 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
             quantity: [{ value: product.quantity, who: 'seller', timestamp: new Date() }],
             priceHistory: [{ value: product.price, who: 'seller', timestamp: new Date() }],
             warranty: [{ value: product.warranty, who: 'seller', timestamp: new Date() }],
-            discount: [{ value: product.discount, who: 'seller', timestamp: new Date() }], // Example for discount
+            settlementWindow: [{ value: product.settlementWindow, who: 'seller', timestamp: new Date() }], // Example for settlementWindow
             buyerWeightage: {
                 price: offer.buyerWeightage.price,
                 quantity: offer.buyerWeightage.quantity,
-                discount: offer.buyerWeightage.discount,
+                settlementWindow: offer.buyerWeightage.settlementWindow,
                 warranty: offer.buyerWeightage.warranty
               },
               buyerScoreImpact: {
                 price: offer.buyerScoreImpact.price,
                 quantity: offer.buyerScoreImpact.quantity,
-                discount: offer.buyerScoreImpact.discount,
+                settlementWindow: offer.buyerScoreImpact.settlementWindow,
                 warranty: offer.buyerScoreImpact.warranty
               },
             sellerWeightage: {
               price: product.weightage.price,
               quantity: product.weightage.quantity,
-              discount: product.weightage.discount,
+              settlementWindow: product.weightage.settlementWindow,
               warranty: product.weightage.warranty
             },
             sellerScoreImpact: {
               price: product.scoreImpact.price,
               quantity: product.scoreImpact.quantity,
-              discount: product.scoreImpact.discount,
+              settlementWindow: product.scoreImpact.settlementWindow,
               warranty: product.scoreImpact.warranty
             }
           },
@@ -130,17 +130,17 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
               quantity: [{ value: offer.quantity, who: 'buyer', timestamp: new Date() }],
               priceHistory: [{ value: offer.price, who: 'buyer', timestamp: new Date() }],
               warranty: [{ value: offer.warranty, who: 'buyer', timestamp: new Date() }],
-              discount: [{ value: offer.discount, who: 'buyer', timestamp: new Date() }], // Example for discount
+              settlementWindow: [{ value: offer.settlementWindow, who: 'buyer', timestamp: new Date() }], // Example for settlementWindow
               buyerWeightage: {
                 price: offer.buyerWeightage.price,
                 quantity: offer.buyerWeightage.quantity,
-                discount: offer.buyerWeightage.discount,
+                settlementWindow: offer.buyerWeightage.settlementWindow,
                 warranty: offer.buyerWeightage.warranty
               },
               buyerScoreImpact: {
                 price: offer.buyerScoreImpact.price,
                 quantity: offer.buyerScoreImpact.quantity,
-                discount: offer.buyerScoreImpact.discount,
+                settlementWindow: offer.buyerScoreImpact.settlementWindow,
                 warranty: offer.buyerScoreImpact.warranty
               }
             },
@@ -262,33 +262,33 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           value={offer.buyerScoreImpact.warranty}
           onChange={handleChange}
         />
-        {/* Discount */}
+        {/* settlementWindow */}
         <TextField
           margin="dense"
-          label="Discount"
+          label="settlementWindow"
           type="number"
           fullWidth
-          name="discount"
-          value={offer.discount}
-          placeholder={product ? product.discount : ''}
+          name="settlementWindow"
+          value={offer.settlementWindow}
+          placeholder={product ? product.settlementWindow : ''}
           onChange={handleChange}
         />
         <TextField
           margin="dense"
-          label="Discount Weightage (Buyer)"
+          label="settlementWindow Weightage (Buyer)"
           type="number"
           fullWidth
-          name="buyerWeightage.discount"
-          value={offer.buyerWeightage.discount}
+          name="buyerWeightage.settlementWindow"
+          value={offer.buyerWeightage.settlementWindow}
           onChange={handleChange}
         />
         <TextField
           margin="dense"
-          label="Discount Score Impact (Buyer)"
+          label="settlementWindow Score Impact (Buyer)"
           type="number"
           fullWidth
-          name="buyerScoreImpact.discount"
-          value={offer.buyerScoreImpact.discount}
+          name="buyerScoreImpact.settlementWindow"
+          value={offer.buyerScoreImpact.settlementWindow}
           onChange={handleChange}
         />
       </DialogContent>

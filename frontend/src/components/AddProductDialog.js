@@ -14,17 +14,17 @@ const AddProductDialog = ({ open, onClose }) => {
   const [productCategory, setProductCategory] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [discount, setDiscount] = useState('');
+  const [settlementWindow, setsettlementWindow] = useState('');
   const [warranty, setWarranty] = useState('');
 
   // States for weightage and score impact
   const [priceWeightage, setPriceWeightage] = useState('');
   const [quantityWeightage, setQuantityWeightage] = useState('');
-  const [discountWeightage, setDiscountWeightage] = useState('');
+  const [settlementWindowWeightage, setsettlementWindowWeightage] = useState('');
   const [warrantyWeightage, setWarrantyWeightage] = useState('');
   const [priceScoreImpact, setPriceScoreImpact] = useState('');
   const [quantityScoreImpact, setQuantityScoreImpact] = useState('');
-  const [discountScoreImpact, setDiscountScoreImpact] = useState('');
+  const [settlementWindowScoreImpact, setsettlementWindowScoreImpact] = useState('');
   const [warrantyScoreImpact, setWarrantyScoreImpact] = useState('');
 
   const handleAddProduct = async () => {
@@ -33,7 +33,7 @@ const AddProductDialog = ({ open, onClose }) => {
       const sumWeightage =
         Number(priceWeightage) +
         Number(quantityWeightage) +
-        Number(discountWeightage) +
+        Number(settlementWindowWeightage) +
         Number(warrantyWeightage);
   
       // Check if sum of weightages is not 100
@@ -59,19 +59,19 @@ const AddProductDialog = ({ open, onClose }) => {
           productCategory,
           price,
           quantity,
-          discount,
+          settlementWindow,
           warranty,
           // Include weightage and score impact in the request body
           weightage: {
             price: priceWeightage,
             quantity: quantityWeightage,
-            discount: discountWeightage,
+            settlementWindow: settlementWindowWeightage,
             warranty: warrantyWeightage,
           },
           scoreImpact: {
             price: priceScoreImpact,
             quantity: quantityScoreImpact,
-            discount: discountScoreImpact,
+            settlementWindow: settlementWindowScoreImpact,
             warranty: warrantyScoreImpact,
           },
         }),
@@ -84,15 +84,15 @@ const AddProductDialog = ({ open, onClose }) => {
         setProductCategory('');
         setPrice('');
         setQuantity('');
-        setDiscount('');
+        setsettlementWindow('');
         setWarranty('');
         setPriceWeightage('');
         setQuantityWeightage('');
-        setDiscountWeightage('');
+        setsettlementWindowWeightage('');
         setWarrantyWeightage('');
         setPriceScoreImpact('');
         setQuantityScoreImpact('');
-        setDiscountScoreImpact('');
+        setsettlementWindowScoreImpact('');
         setWarrantyScoreImpact('');
   
         // Close dialog
@@ -184,27 +184,27 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="*Discount"
+          label="*settlementWindow"
           type="number"
           fullWidth
-          value={discount}
-          onChange={(e) => setDiscount(e.target.value)}
+          value={settlementWindow}
+          onChange={(e) => setsettlementWindow(e.target.value)}
         />
         <TextField
           margin="dense"
-          label="Discount Weightage"
+          label="settlementWindow Weightage"
           type="number"
           fullWidth
-          value={discountWeightage}
-          onChange={(e) => setDiscountWeightage(e.target.value)}
+          value={settlementWindowWeightage}
+          onChange={(e) => setsettlementWindowWeightage(e.target.value)}
         />
         <TextField
           margin="dense"
-          label="Discount Score Impact"
+          label="settlementWindow Score Impact"
           type="number"
           fullWidth
-          value={discountScoreImpact}
-          onChange={(e) => setDiscountScoreImpact(e.target.value)}
+          value={settlementWindowScoreImpact}
+          onChange={(e) => setsettlementWindowScoreImpact(e.target.value)}
         />
         <TextField
           margin="dense"

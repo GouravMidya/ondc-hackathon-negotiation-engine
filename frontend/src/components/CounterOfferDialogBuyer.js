@@ -6,7 +6,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
     price: '',
     quantity: '',
     warranty: '',
-    discount: '',
+    settlementWindow: '',
   });
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
         price: negotiation?.productDetails?.priceHistory?.slice(-1)[0]?.value || '',
         quantity: negotiation?.productDetails?.quantity?.slice(-1)[0]?.value || '',
         warranty: negotiation?.productDetails?.warranty?.slice(-1)[0]?.value || '',
-        discount: negotiation?.productDetails?.discount?.slice(-1)[0]?.value || '',
+        settlementWindow: negotiation?.productDetails?.settlementWindow?.slice(-1)[0]?.value || '',
       });
     }
   }, [negotiation]);
@@ -44,7 +44,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
             priceHistory: [{ value: offer.price, who: 'buyer', timestamp: new Date() }],
             quantity: [{ value: offer.quantity, who: 'buyer', timestamp: new Date() }],
             warranty: [{ value: offer.warranty, who: 'buyer', timestamp: new Date() }],
-            discount: [{ value: offer.discount, who: 'buyer', timestamp: new Date() }],
+            settlementWindow: [{ value: offer.settlementWindow, who: 'buyer', timestamp: new Date() }],
           },
           negotiationDetails: {
             sellerSatisfaction: 'Satisfied',
@@ -103,11 +103,11 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
         />
         <TextField
           margin="dense"
-          label="Discount"
+          label="settlementWindow"
           type="number"
           fullWidth
-          name="discount"
-          value={counterOffer.discount}
+          name="settlementWindow"
+          value={counterOffer.settlementWindow}
           onChange={handleChange}
         />
       </DialogContent>

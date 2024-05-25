@@ -4,12 +4,16 @@ const winston = require('winston');
 //mail service for sending mails after negotiation termination , success and failure
 const nodemailer = require('nodemailer');
 
+
+// Load environment variables
+require('dotenv').config();
+
 // Create a mail transporter
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.MAIL, // Ensure the correct environment variable name
-        pass: process.env.PASS  // Ensure the correct environment variable name
+        user: process.env.mail, // Ensure the correct environment variable name
+        pass: process.env.pass  // Ensure the correct environment variable name
     }
 });
 
@@ -22,16 +26,7 @@ const sendSuccessEmail = async (negotiation) => {
         const lastPriceHistory = getLastItem(negotiation.productDetails?.priceHistory);
         const lastQuantity = getLastItem(negotiation.productDetails?.quantity);
         const lastWarranty = getLastItem(negotiation.productDetails?.warranty);
-        const lastDiscount = getLastItem(negotiation.productDetails?.discount);
-        const lastFinancing = getLastItem(negotiation.productDetails?.financing);
-        const lastBuyerFinderFee = getLastItem(negotiation.productDetails?.buyerFinderFee);
-        const lastCommission = getLastItem(negotiation.productDetails?.commission);
         const lastSettlementWindow = getLastItem(negotiation.productDetails?.settlementWindow);
-        const lastSettlementCycle = getLastItem(negotiation.productDetails?.settlementCycle);
-        const lastPerformanceStandard = getLastItem(negotiation.productDetails?.performanceStandard);
-        const lastJurisdiction = getLastItem(negotiation.productDetails?.jurisdiction);
-        const lastDisputes = getLastItem(negotiation.productDetails?.disputes);
-        const lastLiability = getLastItem(negotiation.productDetails?.liability);
 
         // Include these values in the filteredProperties object
         const filteredProperties = {
@@ -46,21 +41,12 @@ const sendSuccessEmail = async (negotiation) => {
             Price_History: lastPriceHistory.value,
             Quantity: lastQuantity.value,
             Warranty: lastWarranty.value,
-            Discount: lastDiscount.value,
-            Financing: lastFinancing,
-            BuyerFinderFee: lastBuyerFinderFee,
-            Commission: lastCommission,
             SettlementWindow: lastSettlementWindow,
-            SettlementCycle: lastSettlementCycle,
-            PerformanceStandard: lastPerformanceStandard,
-            Jurisdiction: lastJurisdiction,
-            Disputes: lastDisputes,
-            Liability: lastLiability
         };
 
         // Include these values in the mailOptions
         const mailOptions = {
-            from: process.env.mail,
+            from: process.env.MAIL, // Ensure correct environment variable
             to: `${negotiation.buyer?.email}, ${negotiation.seller?.email}`,
             subject: `Negotiation Successful for Negotiation ID: ${negotiation._id}`,
             text: `Negotiation was Successful:\nNegotiation Details:\n` +
@@ -75,16 +61,7 @@ const sendSuccessEmail = async (negotiation) => {
                 `Price_History: ${filteredProperties.Price_History}\n` +
                 `Quantity:${filteredProperties.Quantity}\n`+
                 `Warranty: ${filteredProperties.Warranty}\n` +
-                `Discount: ${filteredProperties.Discount}\n` +
-                `Financing: ${filteredProperties.Financing}\n` +
-                `BuyerFinderFee: ${filteredProperties.BuyerFinderFee}\n` +
-                `Commission: ${filteredProperties.Commission}\n` +
-                `SettlementWindow: ${filteredProperties.SettlementWindow}\n` +
-                `SettlementCycle: ${filteredProperties.SettlementCycle}\n` +
-                `PerformanceStandard: ${filteredProperties.PerformanceStandard}\n` +
-                `Jurisdiction: ${filteredProperties.Jurisdiction}\n` +
-                `Disputes: ${filteredProperties.Disputes}\n` +
-                `Liability: ${filteredProperties.Liability}`
+                `SettlementWindow: ${filteredProperties.SettlementWindow}\n`
         };
 
         const info = await transporter.sendMail(mailOptions);
@@ -92,9 +69,9 @@ const sendSuccessEmail = async (negotiation) => {
     } catch (error) {
         console.error('Error sending success email:', error);
         winston.error(error);
-        // Handle the error, you might want to send a response back to the client
     }
 };
+
 
 
 // Function to send alert to user when negotiation not progressing properly

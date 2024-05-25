@@ -63,7 +63,7 @@ const NegotiationCardSeller = ({ negotiation, handleAcceptDeal }) => {
               Last Warranty: {lastValue(negotiation.productDetails.warranty)}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
-              Last Discount: {lastValue(negotiation.productDetails.discount)}
+              Last settlementWindow: {lastValue(negotiation.productDetails.settlementWindow)}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
               State: {negotiation.negotiationDetails.state}

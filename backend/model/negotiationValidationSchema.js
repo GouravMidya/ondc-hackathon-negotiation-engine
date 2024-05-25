@@ -44,19 +44,19 @@ const weightageSchema = Joi.object({
   price: Joi.number().required(),
   quantity: Joi.number().required(),
   warranty: Joi.number().required(),
-  discount: Joi.number().required()
+  settlementWindow: Joi.number().required()
 });
 
 const scoreImpactSchema = Joi.object({
   price: Joi.number(),
   quantity: Joi.number(),
   warranty: Joi.number(),
-  discount: Joi.number(),
+  settlementWindow: Joi.number(),
 });
 
 // Custom validation function to ensure the sum of weightages is 100
 const validateWeightagesSum = (value, helpers) => {
-  const sum = value.price + value.quantity + value.warranty + value.discount;
+  const sum = value.price + value.quantity + value.warranty + value.settlementWindow;
   if (sum !== 100) {
     return helpers.message('Sum of weightages must be equal to 100');
   }
@@ -85,7 +85,7 @@ const negotiationValidationSchema = Joi.object({
       who: Joi.string().valid('seller', 'buyer').required(),
       timestamp: Joi.date().required()
     })).required(),
-    discount: Joi.array().items(Joi.object({
+    settlementWindow: Joi.array().items(Joi.object({
       value: Joi.number().required(),
       who: Joi.string().valid('seller', 'buyer').required(),
       timestamp: Joi.date().required()

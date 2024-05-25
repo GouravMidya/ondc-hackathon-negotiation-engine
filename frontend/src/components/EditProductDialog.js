@@ -15,7 +15,7 @@ const EditProductDialog = ({ open, onClose, product }) => {
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [warranty, setWarranty] = useState('');
-  const [discount, setDiscount] = useState('');
+  const [settlementWindow, setsettlementWindow] = useState('');
 
   useEffect(() => {
     if (product) {
@@ -25,7 +25,7 @@ const EditProductDialog = ({ open, onClose, product }) => {
       setPrice(product.price || '');
       setQuantity(product.quantity || '');
       setWarranty(product.warranty || '');
-      setDiscount(product.discount || '');
+      setsettlementWindow(product.settlementWindow || '');
     }
   }, [product]);
 
@@ -43,7 +43,7 @@ const EditProductDialog = ({ open, onClose, product }) => {
           price,
           quantity,
           warranty,
-          discount,
+          settlementWindow,
         }),
       });
 
@@ -126,12 +126,12 @@ const EditProductDialog = ({ open, onClose, product }) => {
             />
             <TextField
               margin="dense"
-              label="Discount"
+              label="settlementWindow"
               type="number"
               fullWidth
-              value={discount}
-              onChange={(e) => setDiscount(e.target.value)}
-              placeholder={product.discount || ''}
+              value={settlementWindow}
+              onChange={(e) => setsettlementWindow(e.target.value)}
+              placeholder={product.settlementWindow || ''}
               required
             />
             {/* Other fields */}
