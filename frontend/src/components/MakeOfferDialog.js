@@ -7,97 +7,164 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
     quantity: product ? product.quantity : '',
     warranty: product ? product.warranty : '',
     discount: product ? product.discount : '',
-    financing: '',
-    settlementCycle: ''
+    // Buyer's weightage and score impact
+    buyerWeightage: {
+      price: '',
+      quantity: '',
+      discount: '',
+      warranty: ''
+    },
+    buyerScoreImpact: {
+      price: '',
+      quantity: '',
+      discount: '',
+      warranty: ''
+    }
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setOffer((prevOffer) => ({ ...prevOffer, [name]: value }));
+    const [fieldName, subFieldName] = name.split('.'); // Split the name to get nested field name
+    if (subFieldName) {
+      setOffer((prevOffer) => ({
+        ...prevOffer,
+        [fieldName]: {
+          ...prevOffer[fieldName],
+          [subFieldName]: value
+        }
+      }));
+    } else {
+      setOffer((prevOffer) => ({ ...prevOffer, [name]: value }));
+    }
   };
-
+  
   const handleSubmit = async () => {
     try {
-      // Create negotiation with seller's initial values
-      const negotiationBody = {
-        buyer: {
-          _id: '664a3c452fbec0db56b08beb' // Replace with actual buyer ID
-        },
-        seller: {
-          _id: '65c4e9d4ce6db7b70738c228' // Replace with actual seller ID
-        },
-        productDetails: {
-          productName: product.productName,
-          productDescription: product.productDescription,
-          productCategory: product.productCategory,
-          quantity: [{ value: product.quantity, who: 'seller', timestamp: new Date() }],
-          priceHistory: [{ value: product.price, who: 'seller', timestamp: new Date() }],
-          warranty: [{ value: product.warranty, who: 'seller', timestamp: new Date() }],
-          discount: [{ value: product.discount, who: 'seller', timestamp: new Date() }],
-        },
-        negotiationDetails: {
-          sellerSatisfaction: 'Satisfied',
-          buyerSatisfaction:'Unsatisfied',
-          sellerScore: [0],
-          buyerScore: [0],
-          state: 'OPEN',
-          turn: 'seller'
-        }
-      };
-  
-      const response = await fetch('http://localhost:4000/api/negotiation/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(negotiationBody)
-      });
-  
-      if (!response.ok) {
-        console.error('Failed to create negotiation');
+      // Calculate sum of buyerWeightage
+      const { buyerWeightage } = offer;
+      const sum = Object.values(buyerWeightage).reduce((acc, curr) => acc + Number(curr), 0);
+
+      // Check if sum is not 100
+      if (sum !== 100) {
+        alert('Sum of all weightage must be 100');
         return;
       }
-  
-      const responseData = await response.json();
-      const negotiationId = responseData._id; // Extract the negotiation ID from the response
-  
-      // Now patch the negotiation with the buyer's offer details
-      const patchResponse = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+
+      if (product) {
+        // Create negotiation if product exists (seller's side)
+        const negotiationBody = {
+          buyer: {
+            _id: '664a3c452fbec0db56b08beb' // Replace with actual buyer ID
+          },
+          seller: {
+            _id: '65c4e9d4ce6db7b70738c228' // Replace with actual seller ID
+          },
           productDetails: {
             productName: product.productName,
             productDescription: product.productDescription,
             productCategory: product.productCategory,
-            priceHistory: [{ value: offer.price, who: 'buyer', timestamp: new Date() }], // Add timestamp here
-            quantity: [{ value: offer.quantity, who: 'buyer', timestamp: new Date() }], // Add timestamp here
-            warranty: [{ value: offer.warranty, who: 'buyer', timestamp: new Date() }], // Add timestamp here
-            discount: [{ value: offer.discount, who: 'buyer', timestamp: new Date() }], // Add timestamp here
+            quantity: [{ value: product.quantity, who: 'seller', timestamp: new Date() }],
+            priceHistory: [{ value: product.price, who: 'seller', timestamp: new Date() }],
+            warranty: [{ value: product.warranty, who: 'seller', timestamp: new Date() }],
+            discount: [{ value: product.discount, who: 'seller', timestamp: new Date() }], // Example for discount
+            buyerWeightage: {
+                price: offer.buyerWeightage.price,
+                quantity: offer.buyerWeightage.quantity,
+                discount: offer.buyerWeightage.discount,
+                warranty: offer.buyerWeightage.warranty
+              },
+              buyerScoreImpact: {
+                price: offer.buyerScoreImpact.price,
+                quantity: offer.buyerScoreImpact.quantity,
+                discount: offer.buyerScoreImpact.discount,
+                warranty: offer.buyerScoreImpact.warranty
+              },
+            sellerWeightage: {
+              price: product.weightage.price,
+              quantity: product.weightage.quantity,
+              discount: product.weightage.discount,
+              warranty: product.weightage.warranty
+            },
+            sellerScoreImpact: {
+              price: product.scoreImpact.price,
+              quantity: product.scoreImpact.quantity,
+              discount: product.scoreImpact.discount,
+              warranty: product.scoreImpact.warranty
+            }
           },
           negotiationDetails: {
-            buyerSatisfaction: 'Satisfied',
+            sellerSatisfaction: 'Satisfied',
+            buyerSatisfaction: 'Unsatisfied',
+            sellerScore: [0],
             buyerScore: [0],
             state: 'OPEN',
-            turn: 'buyer'
+            turn: 'seller'
           }
-        }),
-      });
+        };
   
-      if (patchResponse.ok) {
+        // Create the negotiation
+        const postResponse = await fetch('http://localhost:4000/api/negotiation/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(negotiationBody)
+        });
+  
+        if (!postResponse.ok) {
+          console.error('Failed to create negotiation',postResponse);
+          return;
+        }
+  
+        const responseData = await postResponse.json();
+        const negotiationId = responseData._id;
+  
+        // Update the negotiation with buyer's offer details
+        const patchResponse = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productDetails: {
+              quantity: [{ value: offer.quantity, who: 'buyer', timestamp: new Date() }],
+              priceHistory: [{ value: offer.price, who: 'buyer', timestamp: new Date() }],
+              warranty: [{ value: offer.warranty, who: 'buyer', timestamp: new Date() }],
+              discount: [{ value: offer.discount, who: 'buyer', timestamp: new Date() }], // Example for discount
+              buyerWeightage: {
+                price: offer.buyerWeightage.price,
+                quantity: offer.buyerWeightage.quantity,
+                discount: offer.buyerWeightage.discount,
+                warranty: offer.buyerWeightage.warranty
+              },
+              buyerScoreImpact: {
+                price: offer.buyerScoreImpact.price,
+                quantity: offer.buyerScoreImpact.quantity,
+                discount: offer.buyerScoreImpact.discount,
+                warranty: offer.buyerScoreImpact.warranty
+              }
+            },
+            negotiationDetails: {
+              buyerSatisfaction: 'Satisfied',
+              buyerScore: [0],
+              state: 'OPEN',
+              turn: 'buyer'
+            }
+          }),
+        });
+  
+        if (!patchResponse.ok) {
+          console.error('Failed to update negotiation with buyer offer details',patchResponse);
+          return;
+        }
+  
+        // Close the dialog after successful negotiation update
         onClose();
-      } else {
-        console.log('Failed to update negotiation with offer details');
-        console.error('Failed to update negotiation with offer details');
       }
     } catch (error) {
-        console.log("DAMN");
       console.error('Error submitting offer:', error);
     }
   };
-  
   
 
   return (
@@ -105,6 +172,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
       <DialogTitle>Make an Offer</DialogTitle>
       <DialogContent>
         <Typography variant="h6">{product && product.productName}</Typography>
+        {/* Price */}
         <TextField
           margin="dense"
           label="Price"
@@ -118,6 +186,25 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
+          label="Price Weightage (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerWeightage.price"
+          value={offer.buyerWeightage.price}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          label="Price Score Impact (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerScoreImpact.price"
+          value={offer.buyerScoreImpact.price}
+          onChange={handleChange}
+        />
+        {/* Quantity */}
+        <TextField
+          margin="dense"
           label="Quantity"
           type="number"
           fullWidth
@@ -127,6 +214,25 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           onChange={handleChange}
           required
         />
+        <TextField
+          margin="dense"
+          label="Quantity Weightage (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerWeightage.quantity"
+          value={offer.buyerWeightage.quantity}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          label="Quantity Score Impact (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerScoreImpact.quantity"
+          value={offer.buyerScoreImpact.quantity}
+          onChange={handleChange}
+        />
+        {/* Warranty */}
         <TextField
           margin="dense"
           label="Warranty"
@@ -140,6 +246,25 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
+          label="Warranty Weightage (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerWeightage.warranty"
+          value={offer.buyerWeightage.warranty}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          label="Warranty Score Impact (Buyer)"
+          type="number"
+          fullWidth
+          name="buyerScoreImpact.warranty"
+          value={offer.buyerScoreImpact.warranty}
+          onChange={handleChange}
+        />
+        {/* Discount */}
+        <TextField
+          margin="dense"
           label="Discount"
           type="number"
           fullWidth
@@ -150,20 +275,20 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
-          label="Financing"
-          type="text"
+          label="Discount Weightage (Buyer)"
+          type="number"
           fullWidth
-          name="financing"
-          value={offer.financing}
+          name="buyerWeightage.discount"
+          value={offer.buyerWeightage.discount}
           onChange={handleChange}
         />
         <TextField
           margin="dense"
-          label="Settlement Cycle"
+          label="Discount Score Impact (Buyer)"
           type="number"
           fullWidth
-          name="settlementCycle"
-          value={offer.settlementCycle}
+          name="buyerScoreImpact.discount"
+          value={offer.buyerScoreImpact.discount}
           onChange={handleChange}
         />
       </DialogContent>

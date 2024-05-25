@@ -43,6 +43,8 @@ const CurrentNegotiationsTab = () => {
     setSearchTerm(event.target.value);
   };
 
+
+  
   const handleAcceptDeal = async (negotiationId) => {
     try {
       const response = await fetch(`http://localhost:4000/api/negotiation/${negotiationId}`, {

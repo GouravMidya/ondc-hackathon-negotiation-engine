@@ -16,8 +16,6 @@ const EditProductDialog = ({ open, onClose, product }) => {
   const [quantity, setQuantity] = useState('');
   const [warranty, setWarranty] = useState('');
   const [discount, setDiscount] = useState('');
-  const [financing, setFinancing] = useState('');
-  const [settlementCycle, setSettlementCycle] = useState('');
 
   useEffect(() => {
     if (product) {
@@ -28,8 +26,6 @@ const EditProductDialog = ({ open, onClose, product }) => {
       setQuantity(product.quantity || '');
       setWarranty(product.warranty || '');
       setDiscount(product.discount || '');
-      setFinancing(product.financing || '');
-      setSettlementCycle(product.settlementCycle || '');
     }
   }, [product]);
 
@@ -48,8 +44,6 @@ const EditProductDialog = ({ open, onClose, product }) => {
           quantity,
           warranty,
           discount,
-          financing,
-          settlementCycle,
         }),
       });
 
@@ -139,24 +133,6 @@ const EditProductDialog = ({ open, onClose, product }) => {
               onChange={(e) => setDiscount(e.target.value)}
               placeholder={product.discount || ''}
               required
-            />
-            <TextField
-              margin="dense"
-              label="Financing"
-              type="text"
-              fullWidth
-              value={financing}
-              onChange={(e) => setFinancing(e.target.value)}
-              placeholder={product.financing || ''}
-            />
-            <TextField
-              margin="dense"
-              label="Settlement Cycle"
-              type="text"
-              fullWidth
-              value={settlementCycle}
-              onChange={(e) => setSettlementCycle(e.target.value)}
-              placeholder={product.settlementCycle || ''}
             />
             {/* Other fields */}
           </>
