@@ -204,7 +204,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           fullWidth
           name="price"
           value={offer.price}
-          placeholder={product ? product.price : ''}
+          placeholder={product ? String(product.price) : ''}
           onChange={handleChange}
           required
         />
@@ -234,7 +234,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           fullWidth
           name="quantity"
           value={offer.quantity}
-          placeholder={product ? product.quantity : ''}
+          placeholder={product ? String(product.quantity) : ''}
           onChange={handleChange}
           required
         />
@@ -264,7 +264,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           fullWidth
           name="warranty"
           value={offer.warranty}
-          placeholder={product ? product.warranty : ''}
+          placeholder={product ? String(product.warranty) : ''}
           onChange={handleChange}
           required
         />
@@ -294,7 +294,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           fullWidth
           name="settlementWindow"
           value={offer.settlementWindow}
-          placeholder={product ? product.settlementWindow : ''}
+          placeholder={product ? String(product.settlementWindow) : ''}
           onChange={handleChange}
         />
         <TextField
