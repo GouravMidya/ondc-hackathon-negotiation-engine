@@ -61,9 +61,14 @@ const NegotiationDetailsPage = () => {
 
         if (response.ok) {
           console.log('Negotiation updated successfully');
+          alert('Negotiation Successful');
         } else {
           console.error('Failed to update negotiation');
         }
+        if(response.status===403){
+          alert("You have already made the latest offer");
+        }
+        
       } catch (error) {
         console.error('Failed to update negotiation', error);
       }

@@ -183,7 +183,8 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           return;
         }
 
-        // Close the dialog after successful negotiation update
+        // Alert and close the dialog after successful negotiation update
+        alert('Offer successfully created');
         onClose();
       }
     } catch (error) {

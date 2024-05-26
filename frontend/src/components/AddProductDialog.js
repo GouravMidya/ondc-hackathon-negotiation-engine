@@ -96,10 +96,12 @@ const AddProductDialog = ({ open, onClose }) => {
         setsettlementWindowScoreImpact('');
         setWarrantyScoreImpact('');
   
-        // Close dialog
+        alert('Product Added Successfully');
         onClose();
+        window.location.reload();
       } else {
         console.error('Failed to add product');
+        alert('Failed to add product');
       }
     } catch (err) {
       console.error(err);

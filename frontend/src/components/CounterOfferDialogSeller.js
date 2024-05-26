@@ -65,6 +65,8 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
       if (response.ok) {
         console.log('Negotiation updated successfully');
         // Optionally update UI or perform any other action upon successful update
+        alert('Counter offer sent Successfully');
+        window.location.reload();
         onClose();
       } else {
         console.error('Failed to update negotiation');

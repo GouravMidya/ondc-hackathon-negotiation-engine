@@ -50,6 +50,8 @@ const EditProductDialog = ({ open, onClose, product }) => {
 
       if (response.ok) {
         onClose(); // Close the dialog after successfully editing the product
+        alert('Updated Product');
+        window.location.reload();
       } else {
         console.error('Failed to edit product');
       }
