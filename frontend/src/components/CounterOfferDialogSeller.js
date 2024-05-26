@@ -8,6 +8,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
     quantity: '',
     warranty: '',
     settlementWindow: '',
+    sellerscore:'',
   });
 
   useEffect(() => {
@@ -17,6 +18,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
         quantity: negotiation?.productDetails?.quantity?.slice(-1)[0]?.value || '',
         warranty: negotiation?.productDetails?.warranty?.slice(-1)[0]?.value || '',
         settlementWindow: negotiation?.productDetails?.settlementWindow?.slice(-1)[0]?.value || '',
+        sellerscore: negotiation?.productDetails?.sellerscore?.slice(-1)[0]?.value || '',
       });
     }
   }, [negotiation]);
@@ -49,7 +51,7 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
           },
           negotiationDetails: {
             sellerSatisfaction: 'Satisfied',
-            sellerScore: [0],
+            sellerScore: [offer.sellerscore],
             state: 'OPEN',
             turn: 'seller'
           }
@@ -104,12 +106,21 @@ const CounterOfferDialog = ({ open, onClose, negotiation }) => {
           onChange={handleChange}
         />
         <TextField
-          margin="dense"
-          label="settlementWindow"
+          margin="dense"          
+          label="Settlement Window (in Months)"
           type="number"
           fullWidth
           name="settlementWindow"
           value={counterOffer.settlementWindow}
+          onChange={handleChange}
+        />
+        <TextField
+          margin="dense"
+          label="Seller Score"
+          type="number"
+          fullWidth
+          name="sellerscore"
+          value={counterOffer.sellerscore}
           onChange={handleChange}
         />
       </DialogContent>

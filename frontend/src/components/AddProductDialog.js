@@ -185,7 +185,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="*settlementWindow"
+          label="Settlement Window (in Months)"
           type="number"
           fullWidth
           value={settlementWindow}
@@ -193,7 +193,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="settlementWindow Weightage"
+          label="Settlement Window Weightage"
           type="number"
           fullWidth
           value={settlementWindowWeightage}
@@ -201,7 +201,7 @@ const AddProductDialog = ({ open, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="settlementWindow Score Impact"
+          label="Settlement Window Score Impact"
           type="number"
           fullWidth
           value={settlementWindowScoreImpact}

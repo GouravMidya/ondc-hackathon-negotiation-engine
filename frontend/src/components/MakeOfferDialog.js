@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography } from '@mui/material';
 import { API_URL } from '../utils/apiConfig';
 
 const MakeOfferDialog = ({ open, onClose, product }) => {
   const [offer, setOffer] = useState({
-    price: product ? product.price : '',
-    quantity: product ? product.quantity : '',
-    warranty: product ? product.warranty : '',
-    settlementWindow: product ? product.settlementWindow : '',
+    price: '',
+    quantity: '',
+    warranty: '',
+    settlementWindow: '',
     // Buyer's weightage and score impact
     buyerWeightage: {
       price: '',
@@ -22,6 +22,29 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
       warranty: ''
     }
   });
+
+  useEffect(() => {
+    if (product) {
+      setOffer({
+        price: product.price || '',
+        quantity: product.quantity || '',
+        warranty: product.warranty || '',
+        settlementWindow: product.settlementWindow || '',
+        buyerWeightage: {
+          price: '',
+          quantity: '',
+          settlementWindow: '',
+          warranty: ''
+        },
+        buyerScoreImpact: {
+          price: '',
+          quantity: '',
+          settlementWindow: '',
+          warranty: ''
+        }
+      });
+    }
+  }, [product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +61,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
       setOffer((prevOffer) => ({ ...prevOffer, [name]: value }));
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       // Calculate sum of buyerWeightage
@@ -69,17 +92,17 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
             warranty: [{ value: product.warranty, who: 'seller', timestamp: new Date() }],
             settlementWindow: [{ value: product.settlementWindow, who: 'seller', timestamp: new Date() }], // Example for settlementWindow
             buyerWeightage: {
-                price: offer.buyerWeightage.price,
-                quantity: offer.buyerWeightage.quantity,
-                settlementWindow: offer.buyerWeightage.settlementWindow,
-                warranty: offer.buyerWeightage.warranty
-              },
-              buyerScoreImpact: {
-                price: offer.buyerScoreImpact.price,
-                quantity: offer.buyerScoreImpact.quantity,
-                settlementWindow: offer.buyerScoreImpact.settlementWindow,
-                warranty: offer.buyerScoreImpact.warranty
-              },
+              price: offer.buyerWeightage.price,
+              quantity: offer.buyerWeightage.quantity,
+              settlementWindow: offer.buyerWeightage.settlementWindow,
+              warranty: offer.buyerWeightage.warranty
+            },
+            buyerScoreImpact: {
+              price: offer.buyerScoreImpact.price,
+              quantity: offer.buyerScoreImpact.quantity,
+              settlementWindow: offer.buyerScoreImpact.settlementWindow,
+              warranty: offer.buyerScoreImpact.warranty
+            },
             sellerWeightage: {
               price: product.weightage.price,
               quantity: product.weightage.quantity,
@@ -102,7 +125,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
             turn: 'seller'
           }
         };
-  
+
         // Create the negotiation
         const postResponse = await fetch(`${API_URL}/api/negotiation/`, {
           method: 'POST',
@@ -111,15 +134,15 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
           },
           body: JSON.stringify(negotiationBody)
         });
-  
+
         if (!postResponse.ok) {
-          console.error('Failed to create negotiation',postResponse);
+          console.error('Failed to create negotiation', postResponse);
           return;
         }
-  
+
         const responseData = await postResponse.json();
         const negotiationId = responseData._id;
-  
+
         // Update the negotiation with buyer's offer details
         const patchResponse = await fetch(`${API_URL}/api/negotiation/${negotiationId}`, {
           method: 'PATCH',
@@ -147,18 +170,19 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
             },
             negotiationDetails: {
               buyerSatisfaction: 'Satisfied',
-              buyerScore: [0],
+              buyerScore: [100],
+              sellerScore: [0],
               state: 'OPEN',
               turn: 'buyer'
             }
           }),
         });
-  
+
         if (!patchResponse.ok) {
-          console.error('Failed to update negotiation with buyer offer details',patchResponse);
+          console.error('Failed to update negotiation with buyer offer details', patchResponse);
           return;
         }
-  
+
         // Close the dialog after successful negotiation update
         onClose();
       }
@@ -166,7 +190,6 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
       console.error('Error submitting offer:', error);
     }
   };
-  
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -266,7 +289,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         {/* settlementWindow */}
         <TextField
           margin="dense"
-          label="settlementWindow"
+          label="Settlement Window (in Months)"
           type="number"
           fullWidth
           name="settlementWindow"
@@ -276,7 +299,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
-          label="settlementWindow Weightage (Buyer)"
+          label="Settlement Window Weightage (Buyer)"
           type="number"
           fullWidth
           name="buyerWeightage.settlementWindow"
@@ -285,7 +308,7 @@ const MakeOfferDialog = ({ open, onClose, product }) => {
         />
         <TextField
           margin="dense"
-          label="settlementWindow Score Impact (Buyer)"
+          label="Settlement Window Score Impact (Buyer)"
           type="number"
           fullWidth
           name="buyerScoreImpact.settlementWindow"

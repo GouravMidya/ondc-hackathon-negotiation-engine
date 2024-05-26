@@ -27,7 +27,7 @@ const ProductCardSeller = ({ product, handleEditProduct, handleDeleteProduct }) 
         )}
         {product.settlementWindow && (
           <Typography variant="body1" component="p">
-            settlementWindow: {product.settlementWindow}%
+            Settlement Window: {product.settlementWindow} month
           </Typography>
         )}
       </CardContent>
