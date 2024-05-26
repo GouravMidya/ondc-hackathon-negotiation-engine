@@ -49,7 +49,7 @@ const NegotiationCardBuyer = ({ negotiation, handleAcceptDeal }) => {
             Last Price: {lastValue(negotiation.productDetails.priceHistory)}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-              Turn: {negotiation.negotiationDetails.turn}
+              Last Turn: {negotiation.negotiationDetails.turn}
             </Typography>
             
           <Collapse in={expanded} timeout="auto" unmountOnExit>

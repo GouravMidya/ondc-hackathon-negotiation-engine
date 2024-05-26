@@ -128,7 +128,7 @@ const NegotiationDetailsPageSeller = () => {
                 <strong>Turn:</strong>{' '}
               </Typography>
               <Chip
-                label={negotiation.negotiationDetails.turn}
+                label={negotiation.negotiationDetails.turn === 'seller' ? 'Buyer' : 'Seller'}
                 color={negotiation.negotiationDetails.turn === 'seller' ? 'primary' : 'secondary'}
                 size="small"
                 sx={{ ml: 1 }}
